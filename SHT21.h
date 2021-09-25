@@ -1,0 +1,110 @@
+#pragma once
+//
+//    FILE: SHT21.h
+//  AUTHOR: Rob Tillaart
+// VERSION: 0.1.0
+//    DATE: 2021-09-25
+// PURPOSE: Arduino library for the SHT21 temperature and humidity sensor
+//     URL: https://github.com/RobTillaart/SHT21
+//
+
+
+#include "Arduino.h"
+#include "Wire.h"
+
+
+#define SHT21_LIB_VERSION             (F("0.1.0"))
+
+
+// fields readStatus
+#define SHT21_STATUS_ALERT_PENDING    (1 << 15)
+#define SHT21_STATUS_HEATER_ON        (1 << 13)
+#define SHT21_STATUS_HUM_TRACK_ALERT  (1 << 11)
+#define SHT21_STATUS_TEMP_TRACK_ALERT (1 << 10)
+#define SHT21_STATUS_SYSTEM_RESET     (1 << 4)
+#define SHT21_STATUS_COMMAND_STATUS   (1 << 1)
+#define SHT21_STATUS_WRITE_CRC_STATUS (1 << 0)
+
+
+// error codes
+#define SHT21_OK                      0x00
+#define SHT21_ERR_WRITECMD            0x81
+#define SHT21_ERR_READBYTES           0x82
+#define SHT21_ERR_HEATER_OFF          0x83
+#define SHT21_ERR_NOT_CONNECT         0x84
+#define SHT21_ERR_CRC_TEMP            0x85
+#define SHT21_ERR_CRC_HUM             0x86
+#define SHT21_ERR_CRC_STATUS          0x87
+#define SHT21_ERR_HEATER_COOLDOWN     0x88
+#define SHT21_ERR_HEATER_ON           0x89
+
+
+class SHT21
+{
+public:
+  SHT21();
+
+#if defined(ESP8266) || defined(ESP32)
+  bool begin(const uint8_t address, uint8_t dataPin, uint8_t clockPin);
+#endif
+  bool begin(const uint8_t address);
+  bool begin(const uint8_t address,  TwoWire *wire);
+
+  // blocks 15 milliseconds + actual read + math
+  bool read(bool fast = true);
+
+  // check sensor is reachable over I2C
+  bool isConnected();
+
+  // details see datasheet; summary in SHT21.cpp file
+  uint16_t readStatus();
+
+  // lastRead is in milliSeconds since start
+  uint32_t lastRead() { return _lastRead; };
+
+  bool reset(bool hard = false);
+
+  // do not use heater for long periods,
+  // use it for max 3 minutes to heat up
+  // and let it cool down at least 3 minutes.
+  void    setHeatTimeout(uint8_t seconds);
+  uint8_t getHeatTimeout() { return _heatTimeout; };
+;
+  bool heatOn();
+  bool heatOff();
+  bool isHeaterOn();  // is the sensor still heating up?
+  bool heatUp() { return isHeaterOn(); };   // will be obsolete in future
+
+  float getHumidity()    { return _rawHumidity * (100.0 / 65535); };
+  float getTemperature() { return _rawTemperature * (175.0 / 65535) - 45; };
+  uint16_t getRawHumidity()    { return _rawHumidity ; };
+  uint16_t getRawTemperature() { return _rawTemperature; };
+
+  // ASYNC INTERFACE
+  bool requestData();
+  bool dataReady();
+  bool readData(bool fast = true);
+
+  int getError(); // clears error flag
+
+private:
+  uint8_t crc8(const uint8_t *data, uint8_t len);
+  bool writeCmd(uint16_t cmd);
+  bool readBytes(uint8_t n, uint8_t *val);
+  TwoWire* _wire;
+
+  uint8_t   _address;
+  uint8_t   _heatTimeout;   // seconds
+  uint32_t  _lastRead;
+  uint32_t  _lastRequest;   // for async interface
+  uint32_t  _heaterStart;
+  uint32_t  _heaterStop;
+  bool      _heaterOn;
+
+  uint16_t  _rawHumidity;
+  uint16_t  _rawTemperature;
+
+  uint8_t   _error;
+};
+
+// -- END OF FILE --
