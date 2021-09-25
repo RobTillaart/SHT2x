@@ -1,5 +1,5 @@
 //
-//    FILE: SHT31_async.ino
+//    FILE: SHT21_async.ino
 //  AUTHOR: Rob Tillaart
 // VERSION: 0.1.0
 // PURPOSE: demo async interface
@@ -7,7 +7,7 @@
 
 
 #include "Wire.h"
-#include "SHT31.h"
+#include "SHT21.h"
 
 #define SHT21_ADDRESS   0x44
 
