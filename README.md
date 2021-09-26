@@ -57,7 +57,7 @@ after you've performed a new **read()**.
 - **int getError()** returns last set error flag and clear it. 
 Be sure to clear the error flag by calling **getError()** before calling any command as the error flag could be from a previous command.
 
-| Error | Symbolic                  | Description                 | notes    |
+| Error | Symbolic                  | Description                 | Notes    |
 |:-----:|:--------------------------|:----------------------------|:---------|
 | 0x00  | SHT21_OK                  | no error                    |          |
 | 0x81  | SHT21_ERR_WRITECMD        | I2C write failed            |          |

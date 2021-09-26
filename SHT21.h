@@ -60,7 +60,7 @@ public:
   bool reset();
 
   // details see datasheet; summary in SHT21.cpp file
-  uint16_t getStatus();
+  uint8_t getStatus();
 
   // lastRead is in milliSeconds since start
   uint32_t lastRead() { return _lastRead; };

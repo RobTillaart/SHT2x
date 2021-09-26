@@ -102,13 +102,13 @@ unittest(test_read)
 }
 
 
-unittest(test_readStatus)
+unittest(test_getStatus)
 {
   SHT21 sht;
   bool b = sht.begin(0x44);
   assertEqual(b, true);
   
-  assertEqual(0xFFFF, sht.readStatus());
+  assertEqual(0xFFFF, sht.getStatus());
   expect = SHT21_ERR_READBYTES;
   assertEqual(expect, sht.getError());
 }
