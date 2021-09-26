@@ -49,15 +49,15 @@ void setup()
 void loop()
 {
   // forced switch off
-  if (status & SHT21_STATUS_HEATER_ON) sht.heatOff();
+  sht.heatOff();
 }
 
 
-void printHeaterStatus(uint16_t status)
+void printHeaterStatus(uint8_t status)
 {
   Serial.print(millis());
   Serial.print("\tHEATER: ");
-  if (status & SHT21_STATUS_HEATER_ON)
+  if (status == 0x00)  // todo - elaborate
   {
     Serial.println("ON");
   } else {
