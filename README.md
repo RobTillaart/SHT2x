@@ -47,7 +47,9 @@ returns false if device address is incorrect or device cannot be reset.
 - **uint16_t getRawHumidity()** returns the raw two-byte representation of humidity directly from the sensor.
 - **uint16_t getRawTemperature()** returns the raw two-byte representation of temperature directly from the sensor.
 
-Note that the temperature and humidity values are recalculated on every call to getHumidity() and getTemperature(). If you're worried about the extra cycles, you should make sure to cache these values or only request them after you've performed a new **read()**.
+Note that the temperature and humidity values are recalculated on every call to getHumidity() and getTemperature(). 
+If you're worried about the extra cycles, you should make sure to cache these values or only request them 
+after you've performed a new **read()**.
 
 
 #### Error interface
@@ -55,18 +57,18 @@ Note that the temperature and humidity values are recalculated on every call to 
 - **int getError()** returns last set error flag and clear it. 
 Be sure to clear the error flag by calling **getError()** before calling any command as the error flag could be from a previous command.
 
-| Error | Symbolic                  | Description
+| Error | Symbolic                  | Description                 | notes    |
 |:-----:|:--------------------------|:----------------------------|:---------|
-| 0x00  | SHT21_OK                  | no error                    |
-| 0x81  | SHT21_ERR_WRITECMD        | I2C write failed            |
-| 0x82  | SHT21_ERR_READBYTES       | I2C read failed             |
-| 0x83  | SHT21_ERR_HEATER_OFF      | Could not switch off heater |
-| 0x84  | SHT21_ERR_NOT_CONNECT     | Could not connect           |
-| 0x85  | SHT21_ERR_CRC_TEMP        | CRC error in temperature    |
-| 0x86  | SHT21_ERR_CRC_HUM         | CRC error in humidity       |
-| 0x87  | SHT21_ERR_CRC_STATUS      | CRC error in status field   | not used
-| 0x88  | SHT21_ERR_HEATER_COOLDOWN | Heater need to cool down    |
-| 0x88  | SHT21_ERR_HEATER_ON       | Could not switch on heater  |
+| 0x00  | SHT21_OK                  | no error                    |          |
+| 0x81  | SHT21_ERR_WRITECMD        | I2C write failed            |          |
+| 0x82  | SHT21_ERR_READBYTES       | I2C read failed             |          |
+| 0x83  | SHT21_ERR_HEATER_OFF      | Could not switch off heater |          |
+| 0x84  | SHT21_ERR_NOT_CONNECT     | Could not connect           |          |
+| 0x85  | SHT21_ERR_CRC_TEMP        | CRC error in temperature    |          |
+| 0x86  | SHT21_ERR_CRC_HUM         | CRC error in humidity       |          |
+| 0x87  | SHT21_ERR_CRC_STATUS      | CRC error in status field   | not used |
+| 0x88  | SHT21_ERR_HEATER_COOLDOWN | Heater need to cool down    |          |
+| 0x88  | SHT21_ERR_HEATER_ON       | Could not switch on heater  |          |
 
 
 #### Heater interface
