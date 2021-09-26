@@ -52,7 +52,7 @@ unittest(test_begin)
 {
   SHT21 sht;
 
-  bool b = sht.begin(0x44);
+  bool b = sht.begin(0x40);
   assertEqual(b, true);
 
   assertTrue(sht.reset());
@@ -75,7 +75,7 @@ unittest(test_begin)
 unittest(test_read)
 {
   SHT21 sht;
-  bool b = sht.begin(0x44);
+  bool b = sht.begin(0x40);
   assertEqual(b, true);
 
   assertTrue(sht.isConnected());
@@ -87,14 +87,14 @@ unittest(test_read)
   assertEqual(expect, sht.getError());
 
   start = millis();
-  assertFalse(sht.read(false));
+  assertFalse(sht.read());
   stop = millis();
   Serial.println(stop - start);
   expect = SHT21_ERR_READBYTES;
   assertEqual(expect, sht.getError());
 
   start = millis();
-  assertFalse(sht.read(true));
+  assertFalse(sht.read());
   stop = millis();
   Serial.println(stop - start);
   expect = SHT21_ERR_READBYTES;
@@ -105,7 +105,7 @@ unittest(test_read)
 unittest(test_getStatus)
 {
   SHT21 sht;
-  bool b = sht.begin(0x44);
+  bool b = sht.begin(0x40);
   assertEqual(b, true);
   
   assertEqual(0xFFFF, sht.getStatus());
@@ -117,7 +117,7 @@ unittest(test_getStatus)
 unittest(test_heater)
 {
   SHT21 sht;
-  bool b = sht.begin(0x44);
+  bool b = sht.begin(0x40);
   assertEqual(b, true);
   
   assertTrue(sht.heatOn());
