@@ -20,6 +20,7 @@
 // assertTrue(actual)
 // assertFalse(actual)
 // assertNull(actual)
+// assertEqualFloat(expected, actual, epsilon);    // fabs(a - b) <= epsilon
 
 /*
   most unit tests will test for fail 
@@ -65,8 +66,8 @@ unittest(test_begin)
   Serial.println(sht.getRawHumidity());
 
   // default value == 0
-  assertEqual(-45, sht.getTemperature());
-  assertEqual(0, sht.getHumidity());
+  assertEqualFloat(-46.85, sht.getTemperature(), 0.01);
+  assertEqualFloat(-6, sht.getHumidity(), 0.01);
   assertEqual(0, sht.getRawTemperature());
   assertEqual(0, sht.getRawHumidity());
 }
@@ -108,8 +109,8 @@ unittest(test_getStatus)
   bool b = sht.begin(0x40);
   assertEqual(b, true);
   
-  assertEqual(0xFFFF, sht.getStatus());
-  expect = SHT21_ERR_READBYTES;
+  assertEqual(0x00, sht.getStatus());
+  expect = SHT21_OK;
   assertEqual(expect, sht.getError());
 }
 

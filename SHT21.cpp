@@ -35,6 +35,7 @@ SHT21::SHT21()
   _heaterStop     = 0;
   _heaterOn       = false;
   _error          = SHT21_OK;
+  _status         = 0;
 }
 
 
