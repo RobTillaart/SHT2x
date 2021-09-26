@@ -134,33 +134,6 @@ unittest(test_heater)
 }
 
 
-unittest(test_async)
-{
-  SHT21 sht;
-  bool b = sht.begin(0x44);
-  assertEqual(b, true);
-  
-  assertTrue(sht.requestData());
-  expect = SHT21_OK;
-  assertEqual(expect, sht.getError());
-
-  assertFalse(sht.dataReady());
-  expect = SHT21_OK;
-  assertEqual(expect, sht.getError());
-
-  assertFalse(sht.readData());
-  expect = SHT21_ERR_READBYTES;
-  assertEqual(expect, sht.getError());
-
-  assertFalse(sht.readData(true));
-  expect = SHT21_ERR_READBYTES;
-  assertEqual(expect, sht.getError());
-
-  assertFalse(sht.readData(false));
-  expect = SHT21_ERR_READBYTES;
-  assertEqual(expect, sht.getError());
-}
-
 
 unittest_main()
 
