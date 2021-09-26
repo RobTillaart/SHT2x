@@ -122,11 +122,11 @@ unittest(test_heater)
   assertEqual(b, true);
   
   assertTrue(sht.heatOn());
-  expect = SHT21_OK;
+  expect = SHT21_ERR_READBYTES;
   assertEqual(expect, sht.getError());
 
   assertTrue(sht.heatOff());
-  expect = SHT21_OK;
+  expect = SHT21_ERR_READBYTES;
   assertEqual(expect, sht.getError());
 
   assertFalse(sht.isHeaterOn());
