@@ -9,11 +9,10 @@
 #include "Wire.h"
 #include "SHT21.h"
 
-#define SHT21_ADDRESS   0x44
+#define SHT21_ADDRESS   0x40
 
 uint32_t start;
 uint32_t stop;
-uint32_t cnt;
 
 SHT21 sht;
 
@@ -29,12 +28,9 @@ void setup()
   sht.begin(SHT21_ADDRESS);
   Wire.setClock(100000);
 
-  uint16_t stat = sht.readStatus();
+  uint8_t stat = sht.getStatus();
   Serial.print(stat, HEX);
   Serial.println();
-  
-  sht.requestData();
-  cnt = 0;
 }
 
 
@@ -43,37 +39,31 @@ void loop()
   uint16_t rawTemperature;
   uint16_t rawHumidity;
 
-  if (sht.dataReady())
+  start = micros();
+  bool success  = sht.read();
+  stop = micros();
+  Serial.print("\t");
+  Serial.print(stop - start);
+  Serial.print("\t");
+  if (success == false)
   {
-    start = micros();
-    bool success  = sht.readData();   // default = true = fast
-    stop = micros();
-    sht.requestData();                // request for next sample
-
-    Serial.print("\t");
-    Serial.print(stop - start);
-    Serial.print("\t");
-    if (success == false)
-    {
-      Serial.println("Failed read");
-    }
-    else
-    {
-      rawTemperature = sht.getRawTemperature();
-      rawHumidity = sht.getRawHumidity();
-      Serial.print(rawTemperature, HEX);
-      Serial.print(" = ");
-      Serial.print(rawTemperature * (175.0 / 65535) - 45, 1); // This formula comes from page 14 of the SHT21 datasheet
-      Serial.print("°C\t");
-      Serial.print(sht.getRawHumidity(), HEX);
-      Serial.print(" = ");
-      Serial.print(rawHumidity * (100.0 / 65535), 1); // This formula comes from page 14 of the SHT21 datasheet
-      Serial.print("%\t");
-      Serial.println(cnt);
-      cnt = 0;
-    }
+    Serial.println("Failed read");
   }
-  cnt++; // simulate other activity
+  else
+  {
+    rawTemperature = sht.getRawTemperature();
+    rawHumidity = sht.getRawHumidity();
+    Serial.print(rawTemperature, HEX);
+    Serial.print(" = ");
+    Serial.print(sht.getTemperature(), 1);
+    Serial.print("°C\t");
+    Serial.print(rawHumidity, HEX);
+    Serial.print(" = ");
+    Serial.print(sht.getHumidity(), 1);
+    Serial.print("%\t");
+    Serial.println();
+  }
 }
+
 
 // -- END OF FILE --

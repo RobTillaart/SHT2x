@@ -14,19 +14,14 @@
 #include "SHT21.h"
 
 
-// SUPPORTED COMMANDS - single shot mode only
-#define SHT21_READ_STATUS       0xF32D
-#define SHT21_CLEAR_STATUS      0x3041
+//  SUPPORTED COMMANDS
+#define SHT21_GET_TEMPERATURE_NO_HOLD   0xF3
+#define SHT21_GET_HUMIDITY_NO_HOLD      0xF5
+#define SHT21_SOFT_RESET                0xFE
+#define SHT21_WRITE_USER_REGISTER       0xE6
+#define SHT21_READ_USER_REGISTER        0xE7
 
-#define SHT21_SOFT_RESET        0x30A2
-#define SHT21_HARD_RESET        0x0006
-
-#define SHT21_MEASUREMENT_FAST  0x2416    // page 10 datasheet
-#define SHT21_MEASUREMENT_SLOW  0x2400    // no clock stretching
-
-#define SHT21_HEAT_ON           0x306D
-#define SHT21_HEAT_OFF          0x3066
-#define SHT21_HEATER_TIMEOUT    180000UL  // milliseconds
+#define SHT21_HEATER_TIMEOUT            180000UL  // milliseconds
 
 
 SHT21::SHT21()
@@ -72,25 +67,15 @@ bool SHT21::begin(const uint8_t address)
 
 bool SHT21::begin(const uint8_t address,  TwoWire *wire)
 {
-  if ((address != 0x44) && (address != 0x45))
-  {
-    return false;
-  }
+  // TODO check address range - check SHT20, 21, 25 ?
+  // if ((address != 0x40) && (address != 0x45))
+  // {
+    // return false;
+  // }
   _address = address;
   _wire    = wire;
   _wire->begin();
   return reset();
-}
-
-
-bool SHT21::read(bool fast)
-{
-  if (writeCmd(fast ? SHT21_MEASUREMENT_FAST : SHT21_MEASUREMENT_SLOW) == false)
-  {
-    return false;
-  }
-  delay(fast ? 4 : 15); // table 4 datasheet
-  return readData(fast);
 }
 
 
@@ -102,70 +87,81 @@ bool SHT21::isConnected()
   return (rv == 0);
 }
 
-#ifdef doc
-// bit - description
-// ==================
-// 15 Alert pending status
-//    '0': no pending alerts
-//    '1': at least one pending alert - default
-// 14 Reserved ‘0’
-// 13 Heater status
-//    '0’ : Heater OFF - default
-//    '1’ : Heater ON
-// 12 Reserved '0’
-// 11 Humidity tracking alert
-//    '0’ : no alert - default
-//    '1’ : alert
-// 10 Temp tracking alert
-//    '0’ : no alert - default
-//    '1’ : alert
-// 9:5 Reserved '00000’
-// 4 System reset detected
-//    '0': no reset since last ‘clear status register’ command
-//    '1': reset detected (hard or soft reset command or supply fail) - default
-// 3:2 Reserved ‘00’
-// 1 Command status
-//    '0': last cmd executed successfully
-//    '1': last cmd not processed. Invalid or failed checksum
-// 0 Write data checksum status
-//    '0': checksum of last write correct
-//    '1': checksum of last write transfer failed
-#endif
 
-
-uint16_t SHT21::readStatus()
+bool SHT21::read()
 {
-  uint8_t status[3] = { 0, 0, 0 };
-  // page 13 datasheet
-  if (writeCmd(SHT21_READ_STATUS) == false)
+  uint8_t buffer[3];
+
+  //  TEMPERATURE
+  writeCmd(SHT21_GET_TEMPERATURE_NO_HOLD);
+  if (readBytes(3, (uint8_t*) &buffer[0]) == false)
   {
-    return 0xFFFF;
+    _error = SHT21_ERR_READBYTES;
+    return false;
   }
-  // 16 bit status + CRC
-  if (readBytes(3, (uint8_t*) &status[0]) == false)
+  // TODO CRC8 check
+  // error = SHT21_ERR_CRC_TEMP;
+  _rawTemperature = buffer[0] << 8;
+  _rawTemperature += buffer[1];
+  _rawTemperature &= 0xFFFC;
+
+  _status = buffer[1] & 0x0003;
+  if (_status == 0xFF)
   {
-    return 0xFFFF;
+    _error = SHT21_ERR_READBYTES;
+    return false;
   }
 
-  if (status[2] != crc8(status, 2)) 
-  {
-    _error = SHT21_ERR_CRC_STATUS;
-    return 0xFFFF;
-  }
-
-  return (uint16_t) (status[0] << 8) + status[1];
-}
-
-
-bool SHT21::reset(bool hard)
-{
-  bool b = writeCmd(hard ? SHT21_HARD_RESET : SHT21_SOFT_RESET);
-  if (b == false)
+  //  HUMIDITY
+  writeCmd(SHT21_GET_HUMIDITY_NO_HOLD);
+  if (readBytes(3, (uint8_t*) &buffer[0]) == false)
   {
     return false;
   }
-  delay(1);  // table 4 datasheet
+  // TODO CRC8 check
+  // _error = SHT21_ERR_CRC_HUM;
+  _rawHumidity = buffer[0] << 8;
+  _rawHumidity += buffer[1];
+  _rawHumidity &= 0xFFFC; 
+
+  _status = buffer[1] & 0x0003;
+  if (_status == 0xFF)
+  {
+    _error = SHT21_ERR_READBYTES;
+    return false;
+  }
+
+  _error = SHT21_OK;
+  _lastRead = millis();
   return true;
+}
+
+
+float SHT21::getTemperature()
+{
+  // par 6.2
+  return -46.85 + (175.72 / 65536.0) * _rawTemperature;
+}
+
+
+float SHT21::getHumidity()
+{
+  // par  6.1
+  return -6.0 + (125.0 / 65536.0) * _rawHumidity;
+}
+
+
+bool SHT21::reset()
+{
+  bool b = writeCmd(SHT21_SOFT_RESET);
+  if (b == false) return false;
+  return true;
+}
+
+
+uint8_t SHT21::getStatus()
+{
+  return _status;   // TODO meaning
 }
 
 
@@ -184,7 +180,17 @@ bool SHT21::heatOn()
     _error = SHT21_ERR_HEATER_COOLDOWN;
     return false;
   }
-  if (writeCmd(SHT21_HEAT_ON) == false)
+
+  uint8_t userReg = 0x00;
+  writeCmd(SHT21_READ_USER_REGISTER);
+  if (readBytes(1, (uint8_t *) &userReg) == false)
+  {
+    _error = SHT21_ERR_READBYTES;
+    return false;
+  }
+  userReg |= 0x04;      // HEAT BIT ON
+
+  if (writeCmd(SHT21_READ_USER_REGISTER, userReg) == false)
   {
     _error = SHT21_ERR_HEATER_ON;
     return false;
@@ -197,8 +203,15 @@ bool SHT21::heatOn()
 
 bool SHT21::heatOff()
 {
-  // always switch off the heater - ignore _heaterOn flag.
-  if (writeCmd(SHT21_HEAT_OFF) == false)
+  uint8_t userReg = 0x00;
+  writeCmd(SHT21_READ_USER_REGISTER);
+  if (readBytes(1, (uint8_t *) &userReg) == false)
+  {
+    _error = SHT21_ERR_READBYTES;
+    return false;
+  }
+  userReg &= ~0x04;      // HEAT BIT OFF
+  if (writeCmd(SHT21_READ_USER_REGISTER, userReg) == false)
   {
     _error = SHT21_ERR_HEATER_OFF;  // can be serious!
     return false;
@@ -225,54 +238,6 @@ bool SHT21::isHeaterOn()
 }
 
 
-bool SHT21::requestData()
-{
-  if (writeCmd(SHT21_MEASUREMENT_SLOW) == false)
-  {
-    return false;
-  }
-  _lastRequest = millis();
-  return true;
-}
-
-
-bool SHT21::dataReady()
-{
-  return ((millis() - _lastRequest) > 15);  // TODO MAGIC NR
-}
-
-
-bool SHT21::readData(bool fast)
-{
-  uint8_t buffer[6];
-  if (readBytes(6, (uint8_t*) &buffer[0]) == false)
-  {
-    return false;
-  }
-
-  if (!fast)
-  {
-    if (buffer[2] != crc8(buffer, 2)) 
-    {
-      _error = SHT21_ERR_CRC_TEMP;
-      return false;
-    }
-    if (buffer[5] != crc8(buffer + 3, 2)) 
-    {
-      _error = SHT21_ERR_CRC_HUM;
-      return false;
-    }
-  }
-
-  _rawTemperature = (buffer[0] << 8) + buffer[1];
-  _rawHumidity    = (buffer[3] << 8) + buffer[4];
-
-  _lastRead = millis();
-
-  return true;
-}
-
-
 int SHT21::getError()
 {
   int rv = _error;
@@ -282,7 +247,9 @@ int SHT21::getError()
 
 
 //////////////////////////////////////////////////////////
-
+//
+//  PRIVATE
+//
 uint8_t SHT21::crc8(const uint8_t *data, uint8_t len) 
 {
   // CRC-8 formula from page 14 of SHT spec pdf
@@ -302,11 +269,24 @@ uint8_t SHT21::crc8(const uint8_t *data, uint8_t len)
 }
 
 
-bool SHT21::writeCmd(uint16_t cmd)
+bool SHT21::writeCmd(uint8_t cmd)
 {
   _wire->beginTransmission(_address);
-  _wire->write(cmd >> 8 );
-  _wire->write(cmd & 0xFF);
+  _wire->write(cmd);
+  if (_wire->endTransmission() != 0)
+  {
+    _error = SHT21_ERR_WRITECMD;
+    return false;
+  }
+  return true;
+}
+
+
+bool SHT21::writeCmd(uint8_t cmd, uint8_t value)
+{
+  _wire->beginTransmission(_address);
+  _wire->write(cmd);
+  _wire->write(value);
   if (_wire->endTransmission() != 0)
   {
     _error = SHT21_ERR_WRITECMD;
@@ -330,5 +310,21 @@ bool SHT21::readBytes(uint8_t n, uint8_t *val)
   _error = SHT21_ERR_READBYTES;
   return false;
 }
+
+
+////////////////////////////////////////////////////////
+//
+// DERIVED
+//
+SHT20::SHT20()
+{
+};
+
+
+SHT25::SHT25()
+{
+};
+
+
 
 // -- END OF FILE --

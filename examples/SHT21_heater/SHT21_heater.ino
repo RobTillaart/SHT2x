@@ -9,10 +9,10 @@
 #include "Wire.h"
 #include "SHT21.h"
 
-#define SHT21_ADDRESS   0x44
+#define SHT21_ADDRESS   0x40
 
 SHT21 sht;
-uint16_t status;
+uint8_t status;
 
 
 void setup()
@@ -28,14 +28,14 @@ void setup()
 
   sht.setHeatTimeout(30);  // heater timeout 30 seconds, just for demo.
 
-  status = sht.readStatus();
+  status = sht.getStatus();
   printHeaterStatus(status);
 
   sht.heatOn();
 
   while (sht.isHeaterOn())
   {
-    status = sht.readStatus();
+    status = sht.getStatus();
     printHeaterStatus(status);
     sht.read();
     Serial.println(sht.getTemperature());

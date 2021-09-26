@@ -16,17 +16,12 @@
 #define SHT21_LIB_VERSION             (F("0.1.0"))
 
 
-// fields readStatus
-#define SHT21_STATUS_ALERT_PENDING    (1 << 15)
-#define SHT21_STATUS_HEATER_ON        (1 << 13)
-#define SHT21_STATUS_HUM_TRACK_ALERT  (1 << 11)
-#define SHT21_STATUS_TEMP_TRACK_ALERT (1 << 10)
-#define SHT21_STATUS_SYSTEM_RESET     (1 << 4)
-#define SHT21_STATUS_COMMAND_STATUS   (1 << 1)
-#define SHT21_STATUS_WRITE_CRC_STATUS (1 << 0)
+// fields getStatus   TODO meaning?
+#define SHT21_STATUS_                 0x00
 
 
-// error codes
+// error codes 
+// kept in sync with SHT31 library
 #define SHT21_OK                      0x00
 #define SHT21_ERR_WRITECMD            0x81
 #define SHT21_ERR_READBYTES           0x82
@@ -34,7 +29,7 @@
 #define SHT21_ERR_NOT_CONNECT         0x84
 #define SHT21_ERR_CRC_TEMP            0x85
 #define SHT21_ERR_CRC_HUM             0x86
-#define SHT21_ERR_CRC_STATUS          0x87
+#define SHT21_ERR_CRC_STATUS          0x87     // not used
 #define SHT21_ERR_HEATER_COOLDOWN     0x88
 #define SHT21_ERR_HEATER_ON           0x89
 
@@ -50,47 +45,46 @@ public:
   bool begin(const uint8_t address);
   bool begin(const uint8_t address,  TwoWire *wire);
 
-  // blocks 15 milliseconds + actual read + math
-  bool read(bool fast = true);
-
   // check sensor is reachable over I2C
   bool isConnected();
 
+  // read must be called first...
+  bool read();
+
+  float    getTemperature();
+  float    getHumidity();
+  uint16_t getRawTemperature() { return _rawHumidity; };
+  uint16_t getRawHumidity()    { return _rawTemperature; };
+
+  // might take up to 15 milliseconds.
+  bool reset();
+
   // details see datasheet; summary in SHT21.cpp file
-  uint16_t readStatus();
+  uint16_t getStatus();
 
   // lastRead is in milliSeconds since start
   uint32_t lastRead() { return _lastRead; };
 
-  bool reset(bool hard = false);
 
+  // HEATER
   // do not use heater for long periods,
   // use it for max 3 minutes to heat up
   // and let it cool down at least 3 minutes.
   void    setHeatTimeout(uint8_t seconds);
   uint8_t getHeatTimeout() { return _heatTimeout; };
-;
+
   bool heatOn();
   bool heatOff();
   bool isHeaterOn();  // is the sensor still heating up?
-  bool heatUp() { return isHeaterOn(); };   // will be obsolete in future
-
-  float getHumidity()    { return _rawHumidity * (100.0 / 65535); };
-  float getTemperature() { return _rawTemperature * (175.0 / 65535) - 45; };
-  uint16_t getRawHumidity()    { return _rawHumidity ; };
-  uint16_t getRawTemperature() { return _rawTemperature; };
-
-  // ASYNC INTERFACE
-  bool requestData();
-  bool dataReady();
-  bool readData(bool fast = true);
 
   int getError(); // clears error flag
 
 private:
-  uint8_t crc8(const uint8_t *data, uint8_t len);
-  bool writeCmd(uint16_t cmd);
-  bool readBytes(uint8_t n, uint8_t *val);
+  uint8_t   crc8(const uint8_t *data, uint8_t len);
+
+  bool      writeCmd(uint8_t cmd);
+  bool      writeCmd(uint8_t cmd, uint8_t value);
+  bool      readBytes(uint8_t n, uint8_t *val);
   TwoWire* _wire;
 
   uint8_t   _address;
@@ -104,7 +98,29 @@ private:
   uint16_t  _rawHumidity;
   uint16_t  _rawTemperature;
 
+  uint8_t   _status;
+
   uint8_t   _error;
 };
+
+
+
+////////////////////////////////////////////////////////
+//
+// DERIVED
+//
+class SHT20 : public SHT21
+{
+public:
+  SHT20();
+};
+
+
+class SHT25 : public SHT21
+{
+public:
+  SHT25();
+};
+
 
 // -- END OF FILE --

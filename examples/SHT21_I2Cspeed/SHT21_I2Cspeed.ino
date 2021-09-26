@@ -9,7 +9,7 @@
 #include "Wire.h"
 #include "SHT21.h"
 
-#define SHT21_ADDRESS   0x44
+#define SHT21_ADDRESS   0x40
 
 uint32_t start;
 uint32_t stop;
@@ -28,7 +28,7 @@ void setup()
   sht.begin(SHT21_ADDRESS);
   Wire.setClock(100000);
 
-  uint16_t stat = sht.readStatus();
+  uint8_t stat = sht.getStatus();
   Serial.print(stat, HEX);
   Serial.println();
 }
@@ -36,7 +36,7 @@ void setup()
 
 void loop()
 {
-  for (uint32_t I2Cfreq = 100000; I2Cfreq < 900000; I2Cfreq += 50000)
+  for (uint32_t I2Cfreq = 100000; I2Cfreq < 600000; I2Cfreq += 50000)
   {
     Serial.print(I2Cfreq/1000);
     Wire.setClock(I2Cfreq);
@@ -48,7 +48,7 @@ void loop()
 void test()
 {
   start = micros();
-  sht.read(true);         // default = true/fast       slow = false
+  sht.read();
   stop = micros();
   Serial.print("\t");
   Serial.print(stop - start);
