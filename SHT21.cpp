@@ -95,7 +95,7 @@ bool SHT21::read()
 
   //  TEMPERATURE
   writeCmd(SHT21_GET_TEMPERATURE_NO_HOLD);
-  if (readBytes(3, (uint8_t*) &buffer[0]) == false)
+  if (readBytes(3, (uint8_t*) &buffer[0], 90) == false)
   {
     _error = SHT21_ERR_READBYTES;
     return false;
@@ -115,7 +115,7 @@ bool SHT21::read()
 
   //  HUMIDITY
   writeCmd(SHT21_GET_HUMIDITY_NO_HOLD);
-  if (readBytes(3, (uint8_t*) &buffer[0]) == false)
+  if (readBytes(3, (uint8_t*) &buffer[0], 30) == false)
   {
     return false;
   }
@@ -184,7 +184,7 @@ bool SHT21::heatOn()
 
   uint8_t userReg = 0x00;
   writeCmd(SHT21_READ_USER_REGISTER);
-  if (readBytes(1, (uint8_t *) &userReg) == false)
+  if (readBytes(1, (uint8_t *) &userReg, 5) == false)
   {
     _error = SHT21_ERR_READBYTES;
     return false;
@@ -206,7 +206,7 @@ bool SHT21::heatOff()
 {
   uint8_t userReg = 0x00;
   writeCmd(SHT21_READ_USER_REGISTER);
-  if (readBytes(1, (uint8_t *) &userReg) == false)
+  if (readBytes(1, (uint8_t *) &userReg, 5) == false)
   {
     _error = SHT21_ERR_READBYTES;
     return false;
@@ -297,19 +297,26 @@ bool SHT21::writeCmd(uint8_t cmd, uint8_t value)
 }
 
 
-bool SHT21::readBytes(uint8_t n, uint8_t *val)
+bool SHT21::readBytes(uint8_t n, uint8_t *val, uint8_t maxDuration)
 {
-  int rv = _wire->requestFrom(_address, (uint8_t) n);
-  if (rv == n)
+  _wire->requestFrom(_address, (uint8_t) n);
+  uint32_t start = millis();
+  while (_wire->available() < n)
   {
-    for (uint8_t i = 0; i < n; i++)
+    if (millis() - start > maxDuration) 
     {
-      val[i] = _wire->read();
+      _error = SHT21_ERR_READBYTES;
+      return false;
     }
-    return true;
+    yield();
   }
-  _error = SHT21_ERR_READBYTES;
-  return false;
+
+  for (uint8_t i = 0; i < n; i++)
+  {
+    val[i] = _wire->read();
+  }
+  _error = SHT21_OK;
+  return true;
 }
 
 

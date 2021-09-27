@@ -84,7 +84,7 @@ private:
 
   bool      writeCmd(uint8_t cmd);
   bool      writeCmd(uint8_t cmd, uint8_t value);
-  bool      readBytes(uint8_t n, uint8_t *val);
+  bool      readBytes(uint8_t n, uint8_t *val, uint8_t maxDuration);
   TwoWire* _wire;
 
   uint8_t   _address;
