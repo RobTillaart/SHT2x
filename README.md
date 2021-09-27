@@ -15,7 +15,7 @@ Arduino library for the SHT2x temperature and humidity sensor.
 
 The SHT2x family of sensors should work up to 400 KHz I2C.
 
-This library should work for SHT20, SHT2x and SHT25 but these are 
+This library should work for SHT20, SHT21 and SHT25 but these are 
 not tested yet.
 
 | Sensor | Temperature accuracy | Humidity accuracy |
@@ -32,7 +32,7 @@ All sensors in this family of sensors have address 0x40 (64 decimal).
 #### Base interface
 
 - **SHT20()** constructor.
-- **SHT2x()** constructor.
+- **SHT21()** constructor.
 - **SHT25()** constructor.
 - **bool begin(dataPin, clockPin)** begin function for ESP8266 & ESP32;
 returns false if device address is incorrect or device cannot be reset.
