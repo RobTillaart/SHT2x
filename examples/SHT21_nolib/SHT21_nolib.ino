@@ -27,10 +27,10 @@ void loop()
 {
   delay(1000);
   float t = getTemperature();
-  Serial.println(t,1);
+  Serial.println(t, 1);
   delay(1000);
   float h = getHumidity();
-  Serial.println(h,1);
+  Serial.println(h, 1);
 }
 
 ///////////////////////////////////////////////////
@@ -53,15 +53,17 @@ float getTemperature()
   if (Wire.endTransmission() != 0)
   {
     Serial.println("ERR 1");
+    return 0.0;
   }
-
+  delay(90);
   Wire.requestFrom(SHT_ADDRESS, 3);
   uint32_t start = millis();
   while (Wire.available() < 3)
   {
-    if (millis() - start > 90) 
+    if (millis() - start > 90)
     {
       Serial.println("ERR 2");
+      return 0.0;
     }
     yield();
   }
@@ -85,15 +87,17 @@ float getHumidity()
   if (Wire.endTransmission() != 0)
   {
     Serial.println("ERR 11");
+    return 0.0;
   }
-
+  delay(30);
   Wire.requestFrom(SHT_ADDRESS, 3);
   uint32_t start = millis();
   while (Wire.available() < 3)
   {
-    if (millis() - start > 30) 
+    if (millis() - start > 30)
     {
       Serial.println("ERR 12");
+      return 0.0;
     }
     yield();
   }

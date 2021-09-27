@@ -95,6 +95,7 @@ bool SHT21::read()
 
   //  TEMPERATURE
   writeCmd(SHT21_GET_TEMPERATURE_NO_HOLD);
+  delay(70);
   if (readBytes(3, (uint8_t*) &buffer[0], 90) == false)
   {
     _error = SHT21_ERR_READBYTES;
@@ -115,6 +116,7 @@ bool SHT21::read()
 
   //  HUMIDITY
   writeCmd(SHT21_GET_HUMIDITY_NO_HOLD);
+  delay(30);
   if (readBytes(3, (uint8_t*) &buffer[0], 30) == false)
   {
     return false;
