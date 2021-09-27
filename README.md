@@ -36,8 +36,9 @@ not tested yet.
 - **bool begin(address, dataPin, clockPin)** begin function for ESP8266 & ESP32;
 returns false if device address is incorrect or device cannot be reset.
 - **bool begin(address)** for single I2C bus platforms, e.g UNO.
-- **bool begin(address,  TwoWire \*wire)** for platforms with multiple I2C buses.
-- **bool read()** Does read both the temperature and humidity.
+- **bool begin(address, TwoWire \*wire)** for platforms with multiple I2C buses.
+- **bool read()** Does read both the temperature and humidity.  
+Initial release has a blocking delay. 
 - **bool isConnected()** check if sensor is reachable over I2C. Returns false if not connected.
 - **uint16_t getStatus()** returns a 2 bit status. TODO meaning
 - **uint32_t lastRead()** in milliSeconds since start of program.
@@ -105,6 +106,7 @@ TODO
 - **getSerialNumber()**
 - improve error handling / status. (all code paths)
 - status bits ...
+- investigate blocking delay() in read - optimize... Q: need async interface?
 
 
 ## Operation

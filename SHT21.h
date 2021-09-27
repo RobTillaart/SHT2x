@@ -1,7 +1,7 @@
 #pragma once
 //
 //    FILE: SHT21.h
-//  AUTHOR: Rob Tillaart
+//  AUTHOR: Rob Tillaart, Viktor Balint
 // VERSION: 0.1.0
 //    DATE: 2021-09-25
 // PURPOSE: Arduino library for the SHT21 temperature and humidity sensor
