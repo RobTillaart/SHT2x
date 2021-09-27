@@ -23,10 +23,11 @@
 
 #define SHT21_HEATER_TIMEOUT            180000UL  // milliseconds
 
+#define SHT21_ADDRESS                   0x40
+
 
 SHT21::SHT21()
 {
-  _address        = 0;
   _lastRead       = 0;
   _rawTemperature = 0;
   _rawHumidity    = 0;
@@ -40,14 +41,8 @@ SHT21::SHT21()
 
 
 #if defined(ESP8266) || defined(ESP32)
-bool SHT21::begin(const uint8_t address, const uint8_t dataPin, const uint8_t clockPin)
+bool SHT21::begin(const uint8_t dataPin, const uint8_t clockPin)
 {
-  if ((address != 0x44) && (address != 0x45))
-  {
-    return false;
-  }
-  _address = address;
-
   _wire = &Wire;
   if ((dataPin < 255) && (clockPin < 255))
   {
@@ -60,21 +55,9 @@ bool SHT21::begin(const uint8_t address, const uint8_t dataPin, const uint8_t cl
 #endif
 
 
-bool SHT21::begin(const uint8_t address)
+bool SHT21::begin(TwoWire *wire)
 {
-  return begin(address, &Wire);
-}
-
-
-bool SHT21::begin(const uint8_t address,  TwoWire *wire)
-{
-  // TODO check address range - check SHT20, 21, 25 ?
-  // if ((address != 0x40) && (address != 0x45))
-  // {
-    // return false;
-  // }
-  _address = address;
-  _wire    = wire;
+  _wire = wire;
   _wire->begin();
   return reset();
 }
@@ -82,7 +65,7 @@ bool SHT21::begin(const uint8_t address,  TwoWire *wire)
 
 bool SHT21::isConnected()
 {
-  _wire->beginTransmission(_address);
+  _wire->beginTransmission(SHT21_ADDRESS);
   int rv = _wire->endTransmission();
   if (rv != 0) _error = SHT21_ERR_NOT_CONNECT;
   return (rv == 0);
@@ -274,7 +257,7 @@ uint8_t SHT21::crc8(const uint8_t *data, uint8_t len)
 
 bool SHT21::writeCmd(uint8_t cmd)
 {
-  _wire->beginTransmission(_address);
+  _wire->beginTransmission(SHT21_ADDRESS);
   _wire->write(cmd);
   if (_wire->endTransmission() != 0)
   {
@@ -287,7 +270,7 @@ bool SHT21::writeCmd(uint8_t cmd)
 
 bool SHT21::writeCmd(uint8_t cmd, uint8_t value)
 {
-  _wire->beginTransmission(_address);
+  _wire->beginTransmission(SHT21_ADDRESS);
   _wire->write(cmd);
   _wire->write(value);
   if (_wire->endTransmission() != 0)
@@ -301,7 +284,7 @@ bool SHT21::writeCmd(uint8_t cmd, uint8_t value)
 
 bool SHT21::readBytes(uint8_t n, uint8_t *val, uint8_t maxDuration)
 {
-  _wire->requestFrom(_address, (uint8_t) n);
+  _wire->requestFrom((uint8_t)SHT21_ADDRESS, (uint8_t) n);
   uint32_t start = millis();
   while (_wire->available() < n)
   {

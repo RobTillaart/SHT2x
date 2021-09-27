@@ -53,7 +53,7 @@ unittest(test_begin)
 {
   SHT21 sht;
 
-  bool b = sht.begin(0x40);
+  bool b = sht.begin();
   assertEqual(b, true);
 
   assertTrue(sht.reset());
@@ -76,7 +76,7 @@ unittest(test_begin)
 unittest(test_read)
 {
   SHT21 sht;
-  bool b = sht.begin(0x40);
+  bool b = sht.begin();
   assertEqual(b, true);
 
   assertTrue(sht.isConnected());
@@ -107,7 +107,7 @@ unittest(test_read)
 unittest(test_getStatus)
 {
   SHT21 sht;
-  bool b = sht.begin(0x40);
+  bool b = sht.begin();
   assertEqual(b, true);
   
   assertEqual(0x00, sht.getStatus());
@@ -119,7 +119,7 @@ unittest(test_getStatus)
 unittest(test_heater)
 {
   SHT21 sht;
-  bool b = sht.begin(0x40);
+  bool b = sht.begin();
   assertEqual(b, true);
   
   // assertion wire.available fails ... 

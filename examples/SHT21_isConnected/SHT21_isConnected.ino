@@ -9,8 +9,6 @@
 #include "Wire.h"
 #include "SHT21.h"
 
-#define SHT21_ADDRESS   0x40
-
 uint32_t start;
 uint32_t stop;
 
@@ -25,9 +23,7 @@ void setup()
   Serial.print("SHT21_LIB_VERSION: \t");
   Serial.println(SHT21_LIB_VERSION);
 
-  Wire.begin();
-  sht.begin(SHT21_ADDRESS);
-  Wire.setClock(100000);
+  sht.begin();
 
   uint8_t stat = sht.getStatus();
   Serial.print(stat, HEX);
@@ -40,7 +36,7 @@ void loop()
   if ( sht.isConnected()  )
   {
     start = micros();
-    bool b = sht.read();         // default = true/fast       slow = false
+    bool b = sht.read();
     stop = micros();
 
     int error = sht.getError();

@@ -13,7 +13,7 @@ Arduino library for the SHT21 temperature and humidity sensor.
 
 ## Description
 
-The SHT2x family of sensors should work up to 400 KHz I2C
+The SHT2x family of sensors should work up to 400 KHz I2C.
 
 This library should work for SHT20, SHT21 and SHT25 but these are 
 not tested yet.
@@ -24,6 +24,7 @@ not tested yet.
 | SHT21  |  ~0.3  |  ±3.0  |
 | SHT25  |  ~0.3  |  ±1.8  |
 
+All sensors in this family of sensors have address 0x40 (64 decimal).
 
 
 ## Interface
@@ -33,11 +34,10 @@ not tested yet.
 - **SHT20()** constructor.
 - **SHT21()** constructor.
 - **SHT25()** constructor.
-- **bool begin(address, dataPin, clockPin)** begin function for ESP8266 & ESP32;
+- **bool begin(dataPin, clockPin)** begin function for ESP8266 & ESP32;
 returns false if device address is incorrect or device cannot be reset.
-- **bool begin(address)** for single I2C bus platforms, e.g UNO.
-- **bool begin(address, TwoWire \*wire)** for platforms with multiple I2C buses.
-- **bool read()** Does read both the temperature and humidity.  
+- **bool begin(TwoWire \*wire = &Wire)** optional set the wire interface for platforms with multiple I2C buses. **begin()** calls **reset()** which can take up to 15 ms. 
+- **bool read()** Reads both the temperature and humidity.  
 Initial release has a blocking delay. 
 - **bool isConnected()** check if sensor is reachable over I2C. Returns false if not connected.
 - **uint16_t getStatus()** returns a 2 bit status. TODO meaning
@@ -96,13 +96,15 @@ or to **SHT21_ERR_HEATER_ON**.
 Returns false if fails, setting error to **SHT21_ERR_HEATER_OFF**.
 - **bool isHeaterOn()** is the sensor still in heating cycle?
 
+
 #### Status fields
 
-TODO
+TODO find information as datasheet is minimal.
 
 
 ## Future
 
+- test test test test
 - **getSerialNumber()**
 - improve error handling / status. (all code paths)
 - status bits ...

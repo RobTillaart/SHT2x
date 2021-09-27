@@ -8,8 +8,6 @@
 
 #include "Wire.h"
 
-#define SHT_ADDRESS   0x40
-
 
 void setup()
 {
@@ -37,7 +35,7 @@ void loop()
 
 void testConnected()
 {
-  Wire.beginTransmission(SHT_ADDRESS);
+  Wire.beginTransmission(0x40);
   int rv = Wire.endTransmission();
   if (rv != 0) Serial.println("SHT21_ERR_NOT_CONNECT");
   else Serial.println("CONNECTED");
@@ -48,7 +46,7 @@ float getTemperature()
 {
   uint16_t raw = 0;
 
-  Wire.beginTransmission(SHT_ADDRESS);
+  Wire.beginTransmission(0x40);
   Wire.write(0xF3);
   if (Wire.endTransmission() != 0)
   {
@@ -56,7 +54,7 @@ float getTemperature()
     return 0.0;
   }
   delay(90);
-  Wire.requestFrom(SHT_ADDRESS, 3);
+  Wire.requestFrom(0x40, 3);
   uint32_t start = millis();
   while (Wire.available() < 3)
   {
@@ -82,7 +80,7 @@ float getHumidity()
 {
   uint16_t raw = 0;
 
-  Wire.beginTransmission(SHT_ADDRESS);
+  Wire.beginTransmission(0x40);
   Wire.write(0xF5);
   if (Wire.endTransmission() != 0)
   {
@@ -90,7 +88,7 @@ float getHumidity()
     return 0.0;
   }
   delay(30);
-  Wire.requestFrom(SHT_ADDRESS, 3);
+  Wire.requestFrom(0x40, 3);
   uint32_t start = millis();
   while (Wire.available() < 3)
   {

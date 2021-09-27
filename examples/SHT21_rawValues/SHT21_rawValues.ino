@@ -1,15 +1,13 @@
 //
-//    FILE: SHT21_async.ino
+//    FILE: SHT21_raw_values.ino
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.3.2
-// PURPOSE: demo async interface
+// VERSION: 0.1.0
+// PURPOSE: demo raw
 //     URL: https://github.com/RobTillaart/SHT21
 
 
 #include "Wire.h"
 #include "SHT21.h"
-
-#define SHT21_ADDRESS   0x40
 
 uint32_t start;
 uint32_t stop;
@@ -24,9 +22,7 @@ void setup()
   Serial.print("SHT21_LIB_VERSION: \t");
   Serial.println(SHT21_LIB_VERSION);
 
-  Wire.begin();
-  sht.begin(SHT21_ADDRESS);
-  Wire.setClock(100000);
+  sht.begin();
 
   uint8_t stat = sht.getStatus();
   Serial.print(stat, HEX);
@@ -63,6 +59,8 @@ void loop()
     Serial.print("%\t");
     Serial.println();
   }
+
+  delay(1000);
 }
 
 

@@ -40,10 +40,9 @@ public:
   SHT21();
 
 #if defined(ESP8266) || defined(ESP32)
-  bool begin(const uint8_t address, uint8_t dataPin, uint8_t clockPin);
+  bool begin(const uint8_t dataPin, const uint8_t clockPin);
 #endif
-  bool begin(const uint8_t address);
-  bool begin(const uint8_t address,  TwoWire *wire);
+  bool begin(TwoWire *wire = &Wire);
 
   // check sensor is reachable over I2C
   bool isConnected();
@@ -87,7 +86,6 @@ private:
   bool      readBytes(uint8_t n, uint8_t *val, uint8_t maxDuration);
   TwoWire* _wire;
 
-  uint8_t   _address;
   uint8_t   _heatTimeout;   // seconds
   uint32_t  _lastRead;
   uint32_t  _lastRequest;   // for async interface

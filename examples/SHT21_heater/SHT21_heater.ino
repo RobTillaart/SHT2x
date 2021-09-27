@@ -9,8 +9,6 @@
 #include "Wire.h"
 #include "SHT21.h"
 
-#define SHT21_ADDRESS   0x40
-
 SHT21 sht;
 uint8_t status;
 
@@ -22,9 +20,7 @@ void setup()
   Serial.print("SHT21_LIB_VERSION: \t");
   Serial.println(SHT21_LIB_VERSION);
 
-  Wire.begin();
-  sht.begin(SHT21_ADDRESS);
-  Wire.setClock(100000);
+  sht.begin();
 
   sht.setHeatTimeout(30);  // heater timeout 30 seconds, just for demo.
 
@@ -50,6 +46,7 @@ void loop()
 {
   // forced switch off
   sht.heatOff();
+  delay(1000);
 }
 
 

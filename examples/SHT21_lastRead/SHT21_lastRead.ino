@@ -9,8 +9,6 @@
 #include "Wire.h"
 #include "SHT21.h"
 
-#define SHT21_ADDRESS   0x40
-
 uint32_t start;
 uint32_t stop;
 
@@ -24,9 +22,7 @@ void setup()
   Serial.print("SHT21_LIB_VERSION: \t");
   Serial.println(SHT21_LIB_VERSION);
 
-  Wire.begin();
-  sht.begin(SHT21_ADDRESS);
-  Wire.setClock(100000);
+  sht.begin();
 
   uint8_t stat = sht.getStatus();
   Serial.print(stat, HEX);
@@ -36,14 +32,14 @@ void setup()
 
 void loop()
 {
-  sht.read();         // default = true/fast       slow = false
+  sht.read();
   Serial.print("\t");
   Serial.print(sht.lastRead());
   Serial.print("\t");
   Serial.print(sht.getTemperature(), 1);
   Serial.print("\t");
   Serial.println(sht.getHumidity(), 1);
-  delay(100);
+  delay(1000);
 }
 
 
