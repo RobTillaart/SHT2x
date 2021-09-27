@@ -1,7 +1,7 @@
 {
-  "name": "SHT21",
-  "keywords": "SHT21 Temperature Humidity I2C SHT20 SHT21 SHT25",
-  "description": "Arduino library for the I2C SHT21 temperature and humidity sensor",
+  "name": "SHT2x",
+  "keywords": "SHT2x Temperature Humidity I2C SHT20 SHT21 SHT25",
+  "description": "Arduino library for the I2C SHT2x series temperature and humidity sensor",
   "authors":
   [
     {
@@ -16,7 +16,7 @@
   "repository":
   {
     "type": "git",
-    "url": "https://github.com/RobTillaart/SHT21"
+    "url": "https://github.com/RobTillaart/SHT2x.git"
   },
   "version": "0.1.0",
   "license": "MIT",

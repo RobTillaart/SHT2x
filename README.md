@@ -1,21 +1,21 @@
 
-[![Arduino CI](https://github.com/robtillaart/SHT21/workflows/Arduino%20CI/badge.svg)](https://github.com/marketplace/actions/arduino_ci)
-[![JSON check](https://github.com/RobTillaart/SHT21/actions/workflows/jsoncheck.yml/badge.svg)](https://github.com/RobTillaart/SHT21/actions/workflows/jsoncheck.yml)
-[![Arduino-lint](https://github.com/RobTillaart/SHT21/actions/workflows/arduino-lint.yml/badge.svg)](https://github.com/RobTillaart/SHT21/actions/workflows/arduino-lint.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/RobTillaart/SHT21/blob/master/LICENSE)
-[![GitHub release](https://img.shields.io/github/release/RobTillaart/SHT21.svg?maxAge=3600)](https://github.com/RobTillaart/SHT21/releases)
+[![Arduino CI](https://github.com/robtillaart/SHT2x/workflows/Arduino%20CI/badge.svg)](https://github.com/marketplace/actions/arduino_ci)
+[![JSON check](https://github.com/RobTillaart/SHT2x/actions/workflows/jsoncheck.yml/badge.svg)](https://github.com/RobTillaart/SHT2x/actions/workflows/jsoncheck.yml)
+[![Arduino-lint](https://github.com/RobTillaart/SHT2x/actions/workflows/arduino-lint.yml/badge.svg)](https://github.com/RobTillaart/SHT2x/actions/workflows/arduino-lint.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/RobTillaart/SHT2x/blob/master/LICENSE)
+[![GitHub release](https://img.shields.io/github/release/RobTillaart/SHT2x.svg?maxAge=3600)](https://github.com/RobTillaart/SHT2x/releases)
 
 
-# SHT21
+# SHT2x
 
-Arduino library for the SHT21 temperature and humidity sensor.
+Arduino library for the SHT2x temperature and humidity sensor.
 
 
 ## Description
 
 The SHT2x family of sensors should work up to 400 KHz I2C.
 
-This library should work for SHT20, SHT21 and SHT25 but these are 
+This library should work for SHT20, SHT2x and SHT25 but these are 
 not tested yet.
 
 | Sensor | Temperature accuracy | Humidity accuracy |
@@ -32,7 +32,7 @@ All sensors in this family of sensors have address 0x40 (64 decimal).
 #### Base interface
 
 - **SHT20()** constructor.
-- **SHT21()** constructor.
+- **SHT2x()** constructor.
 - **SHT25()** constructor.
 - **bool begin(dataPin, clockPin)** begin function for ESP8266 & ESP32;
 returns false if device address is incorrect or device cannot be reset.
@@ -60,22 +60,22 @@ Be sure to clear the error flag by calling **getError()** before calling any com
 
 | Error | Symbolic                  | Description                 | Notes    |
 |:-----:|:--------------------------|:----------------------------|:---------|
-| 0x00  | SHT21_OK                  | no error                    |          |
-| 0x81  | SHT21_ERR_WRITECMD        | I2C write failed            |          |
-| 0x82  | SHT21_ERR_READBYTES       | I2C read failed             |          |
-| 0x83  | SHT21_ERR_HEATER_OFF      | Could not switch off heater |          |
-| 0x84  | SHT21_ERR_NOT_CONNECT     | Could not connect           |          |
-| 0x85  | SHT21_ERR_CRC_TEMP        | CRC error in temperature    |          |
-| 0x86  | SHT21_ERR_CRC_HUM         | CRC error in humidity       |          |
-| 0x87  | SHT21_ERR_CRC_STATUS      | CRC error in status field   | not used |
-| 0x88  | SHT21_ERR_HEATER_COOLDOWN | Heater need to cool down    |          |
-| 0x88  | SHT21_ERR_HEATER_ON       | Could not switch on heater  |          |
+| 0x00  | SHT2x_OK                  | no error                    |          |
+| 0x81  | SHT2x_ERR_WRITECMD        | I2C write failed            |          |
+| 0x82  | SHT2x_ERR_READBYTES       | I2C read failed             |          |
+| 0x83  | SHT2x_ERR_HEATER_OFF      | Could not switch off heater |          |
+| 0x84  | SHT2x_ERR_NOT_CONNECT     | Could not connect           |          |
+| 0x85  | SHT2x_ERR_CRC_TEMP        | CRC error in temperature    |          |
+| 0x86  | SHT2x_ERR_CRC_HUM         | CRC error in humidity       |          |
+| 0x87  | SHT2x_ERR_CRC_STATUS      | CRC error in status field   | not used |
+| 0x88  | SHT2x_ERR_HEATER_COOLDOWN | Heater need to cool down    |          |
+| 0x88  | SHT2x_ERR_HEATER_ON       | Could not switch on heater  |          |
 
 
 #### Heater interface
 
 **WARNING:** Do not use heater for long periods.  
-Datasheet SHT21 does not mention max time so the maximum time of the SHT3x series is assumed here.
+Datasheet SHT2x does not mention max time so the maximum time of the SHT3x series is assumed here.
 
 Use the heater for max **180** seconds, and let it cool down **180** seconds = 3 minutes. 
 THe library guards the cool down time by preventing switching the heater on 
@@ -90,10 +90,10 @@ Switch off the heater by directly calling **heatOff()** or indirectly by calling
 This value is truncated to max 180 seconds. 
 - **uint8_t getHeatTimeout()** returns the value set.
 - **bool heatOn()** switches heat cycle on if not already on.
-Returns false if fails, setting error to **SHT21_ERR_HEATER_COOLDOWN** 
-or to **SHT21_ERR_HEATER_ON**. 
+Returns false if fails, setting error to **SHT2x_ERR_HEATER_COOLDOWN** 
+or to **SHT2x_ERR_HEATER_ON**. 
 - **bool heatOff()** switches heat cycle off. 
-Returns false if fails, setting error to **SHT21_ERR_HEATER_OFF**.
+Returns false if fails, setting error to **SHT2x_ERR_HEATER_OFF**.
 - **bool isHeaterOn()** is the sensor still in heating cycle?
 
 

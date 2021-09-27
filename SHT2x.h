@@ -1,11 +1,11 @@
 #pragma once
 //
-//    FILE: SHT21.h
+//    FILE: SHT2x.h
 //  AUTHOR: Rob Tillaart, Viktor Balint
 // VERSION: 0.1.0
 //    DATE: 2021-09-25
-// PURPOSE: Arduino library for the SHT21 temperature and humidity sensor
-//     URL: https://github.com/RobTillaart/SHT21
+// PURPOSE: Arduino library for the SHT2x temperature and humidity sensor
+//     URL: https://github.com/RobTillaart/SHT2x
 //
 
 
@@ -13,31 +13,31 @@
 #include "Wire.h"
 
 
-#define SHT21_LIB_VERSION             (F("0.1.0"))
+#define SHT2x_LIB_VERSION             (F("0.1.0"))
 
 
 // fields getStatus   TODO meaning?
-#define SHT21_STATUS_                 0x00
+#define SHT2x_STATUS_                 0x00
 
 
 // error codes 
 // kept in sync with SHT31 library
-#define SHT21_OK                      0x00
-#define SHT21_ERR_WRITECMD            0x81
-#define SHT21_ERR_READBYTES           0x82
-#define SHT21_ERR_HEATER_OFF          0x83
-#define SHT21_ERR_NOT_CONNECT         0x84
-#define SHT21_ERR_CRC_TEMP            0x85
-#define SHT21_ERR_CRC_HUM             0x86
-#define SHT21_ERR_CRC_STATUS          0x87     // not used
-#define SHT21_ERR_HEATER_COOLDOWN     0x88
-#define SHT21_ERR_HEATER_ON           0x89
+#define SHT2x_OK                      0x00
+#define SHT2x_ERR_WRITECMD            0x81
+#define SHT2x_ERR_READBYTES           0x82
+#define SHT2x_ERR_HEATER_OFF          0x83
+#define SHT2x_ERR_NOT_CONNECT         0x84
+#define SHT2x_ERR_CRC_TEMP            0x85
+#define SHT2x_ERR_CRC_HUM             0x86
+#define SHT2x_ERR_CRC_STATUS          0x87     // not used
+#define SHT2x_ERR_HEATER_COOLDOWN     0x88
+#define SHT2x_ERR_HEATER_ON           0x89
 
 
-class SHT21
+class SHT2x
 {
 public:
-  SHT21();
+  SHT2x();
 
 #if defined(ESP8266) || defined(ESP32)
   bool begin(const uint8_t dataPin, const uint8_t clockPin);
@@ -58,7 +58,7 @@ public:
   // might take up to 15 milliseconds.
   bool reset();
 
-  // details see datasheet; summary in SHT21.cpp file
+  // details see datasheet; summary in SHT2x.cpp file
   uint8_t getStatus();
 
   // lastRead is in milliSeconds since start
@@ -107,14 +107,20 @@ private:
 //
 // DERIVED
 //
-class SHT20 : public SHT21
+class SHT20 : public SHT2x
 {
 public:
   SHT20();
 };
 
+class SHT21 : public SHT2x
+{
+public:
+  SHT21();
+};
 
-class SHT25 : public SHT21
+
+class SHT25 : public SHT2x
 {
 public:
   SHT25();

@@ -3,8 +3,8 @@
 //  AUTHOR: Rob Tillaart
 // VERSION: 0.1.0
 //    DATE: 2021-09-25
-// PURPOSE: unit tests for the SHT21 temperature and humidity sensor
-//          https://github.com/RobTillaart/SHT21
+// PURPOSE: unit tests for the SHT2x temperature and humidity sensor
+//          https://github.com/RobTillaart/SHT2x
 //          https://www.adafruit.com/product/2857
 //          https://github.com/Arduino-CI/arduino_ci/blob/master/REFERENCE.md
 //
@@ -33,7 +33,7 @@
 #include <ArduinoUnitTests.h>
 
 #include "Arduino.h"
-#include "SHT21.h"
+#include "SHT2x.h"
 
 int expect;  // TODO needed as there seems a problem with 8 bit comparisons (char?)
 
@@ -51,13 +51,13 @@ unittest_teardown()
 
 unittest(test_begin)
 {
-  SHT21 sht;
+  SHT2x sht;
 
   bool b = sht.begin();
   assertEqual(b, true);
 
   assertTrue(sht.reset());
-  expect = SHT21_OK;
+  expect = SHT2x_OK;
   assertEqual(expect, sht.getError());
 
   Serial.println(sht.getTemperature());
@@ -75,64 +75,64 @@ unittest(test_begin)
 
 unittest(test_read)
 {
-  SHT21 sht;
+  SHT2x sht;
   bool b = sht.begin();
   assertEqual(b, true);
 
   assertTrue(sht.isConnected());
-  expect = SHT21_OK;
+  expect = SHT2x_OK;
   assertEqual(expect, sht.getError());
 
   // assertion wire.available fails ... 
   // assertFalse(sht.read());
-  // expect = SHT21_ERR_READBYTES;
+  // expect = SHT2x_ERR_READBYTES;
   // assertEqual(expect, sht.getError());
 
   // start = millis();
   // assertFalse(sht.read());
   // stop = millis();
   // Serial.println(stop - start);
-  // expect = SHT21_ERR_READBYTES;
+  // expect = SHT2x_ERR_READBYTES;
   // assertEqual(expect, sht.getError());
 
   // start = millis();
   // assertFalse(sht.read());
   // stop = millis();
   // Serial.println(stop - start);
-  // expect = SHT21_ERR_READBYTES;
+  // expect = SHT2x_ERR_READBYTES;
   // assertEqual(expect, sht.getError());
 }
 
 
 unittest(test_getStatus)
 {
-  SHT21 sht;
+  SHT2x sht;
   bool b = sht.begin();
   assertEqual(b, true);
   
   assertEqual(0x00, sht.getStatus());
-  expect = SHT21_OK;
+  expect = SHT2x_OK;
   assertEqual(expect, sht.getError());
 }
 
 
 unittest(test_heater)
 {
-  SHT21 sht;
+  SHT2x sht;
   bool b = sht.begin();
   assertEqual(b, true);
   
   // assertion wire.available fails ... 
   // assertFalse(sht.heatOn());
-  // expect = SHT21_ERR_READBYTES;
+  // expect = SHT2x_ERR_READBYTES;
   // assertEqual(expect, sht.getError());
 
   // assertFalse(sht.heatOff());
-  // expect = SHT21_ERR_READBYTES;
+  // expect = SHT2x_ERR_READBYTES;
   // assertEqual(expect, sht.getError());
 
   // assertFalse(sht.isHeaterOn());
-  // expect = SHT21_OK;
+  // expect = SHT2x_OK;
   // assertEqual(expect, sht.getError());
 }
 
