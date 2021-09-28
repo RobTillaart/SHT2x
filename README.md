@@ -37,7 +37,7 @@ All classes below are derived from SHT2x class.
 - **SHT20()** constructor.
 - **SHT21()** constructor.
 - **SHT25()** constructor.
-- **STU20()** constructor.
+- **HTU20()** constructor.
 - **HTU21()** constructor.
 
 
