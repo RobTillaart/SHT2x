@@ -29,11 +29,20 @@ All sensors in this family of sensors have address 0x40 (64 decimal).
 
 ## Interface
 
-#### Base interface
+#### Constructors
 
+All classes below are derived from SHT2x class.
+
+- **SHT2x()** constructor base class.
 - **SHT20()** constructor.
 - **SHT21()** constructor.
 - **SHT25()** constructor.
+- **STU20()** constructor.
+- **HTU21()** constructor.
+
+
+#### Base interface
+
 - **bool begin(dataPin, clockPin)** begin function for ESP8266 & ESP32;
 returns false if device address is incorrect or device cannot be reset.
 - **bool begin(TwoWire \*wire = &Wire)** optional set the wire interface for platforms with multiple I2C buses. **begin()** calls **reset()** which can take up to 15 ms. 
@@ -71,6 +80,8 @@ Be sure to clear the error flag by calling **getError()** before calling any com
 | 0x88  | SHT2x_ERR_HEATER_COOLDOWN | Heater need to cool down    |          |
 | 0x88  | SHT2x_ERR_HEATER_ON       | Could not switch on heater  |          |
 
+Note: the HTU20 / HTU21 have the same error codes.
+
 
 #### Heater interface
 
@@ -99,7 +110,17 @@ Returns false if fails, setting error to **SHT2x_ERR_HEATER_OFF**.
 
 #### Status fields
 
-TODO find information as datasheet is minimal.
+Need to confirm this information.
+
+From HTU20 datasheet
+
+|  bits  | value  | meaning             |
+|:------:|:------:|:--------------------|
+|  00    |   0    | open circuit        |
+|  01    |   1    | temperature reading |
+|  10    |   2    | humidity reading    |
+|  11    |   3    | closed circuit      |
+
 
 
 ## Future
@@ -107,7 +128,7 @@ TODO find information as datasheet is minimal.
 - test test test test
 - **getSerialNumber()**
 - improve error handling / status. (all code paths)
-- status bits ...
+- confirm status bits meaning..
 - investigate blocking delay() in read - optimize... Q: need async interface?
 
 
