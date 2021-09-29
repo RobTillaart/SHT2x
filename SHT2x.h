@@ -16,7 +16,7 @@
 #define SHT2x_LIB_VERSION             (F("0.1.1"))
 
 
-//  fields getStatus (from HTU20 datasheet todo confirm )
+//  fields getStatus
 #define SHT2x_STATUS_OPEN_CIRCUIT     0x00
 #define SHT2x_STATUS_TEMPERATURE      0x01
 #define SHT2x_STATUS_HUMIDITY         0x02
@@ -50,7 +50,7 @@ public:
   //  check sensor is reachable over I2C
   bool isConnected();
 
-  //  read must be called first...
+  //  read must be called get getTemperature / getHumidity
   bool read();
 
   float    getTemperature();
@@ -61,7 +61,7 @@ public:
   //  might take up to 15 milliseconds.
   bool reset();
 
-  //  from datasheet HTU20 (to be confirmed)
+  //  from datasheet HTU20
   //
   //  |  bits  | value  | meaning             |
   //  |:------:|:------:|:--------------------|
