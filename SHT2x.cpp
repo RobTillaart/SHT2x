@@ -1,7 +1,7 @@
 //
 //    FILE: SHT2x.cpp
 //  AUTHOR: Rob Tillaart, Viktor Balint
-// VERSION: 0.1.1
+// VERSION: 0.1.2
 //    DATE: 2021-09-25
 // PURPOSE: Arduino library for the SHT2x temperature and humidity sensor
 //     URL: https://github.com/RobTillaart/SHT2x
@@ -11,6 +11,8 @@
 //  0.1.0   2021-09-25  initial version
 //  0.1.1   2021-09-28  Add HTU2x derived classes,
 //                      update readme.md + add some status info
+//  0.1.2   2021-09-29  Add Si70xx derived classes 
+//                      add getEIDA(), getEIDB(), getFirmwareVersion()
 
 
 #include "SHT2x.h"
@@ -149,9 +151,11 @@ bool SHT2x::reset()
 
 uint8_t SHT2x::getStatus()
 {
-  return _status;   // TODO meaning
+  return _status;
 }
 
+
+//  HEATER
 
 void SHT2x::setHeatTimeout(uint8_t seconds)
 {
@@ -226,11 +230,101 @@ bool SHT2x::isHeaterOn()
 }
 
 
+bool SHT2x::setHeaterLevel(uint8_t level)
+{
+  if (level > 15)
+  {
+    return false;
+  }
+
+  uint8_t heaterReg = 0;
+  writeCmd(0x11);  // Read Heater Control Register
+  if (readBytes(1, (uint8_t *) &heaterReg, 5) == false)
+  {
+    _error = SHT2x_ERR_READBYTES;
+    return false;
+  }
+  heaterReg &= 0xF0;
+  heaterReg |= level;
+  if (writeCmd(0x51, heaterReg) == false)
+  {
+    _error = -1;
+    return false;
+  }
+  return true;
+}
+
+
+bool SHT2x::getHeaterLevel(uint8_t & level)
+{
+  uint8_t heaterReg = 0;
+  writeCmd(0x11);  // Read Heater Control Register
+  if (readBytes(1, (uint8_t *) &heaterReg, 5) == false)
+  {
+    _error = SHT2x_ERR_READBYTES;
+    return false;
+  }
+  level = heaterReg & 0x0F;
+  return true;
+}
+
+
 int SHT2x::getError()
 {
   int rv = _error;
   _error = SHT2x_OK;
   return rv;
+}
+
+
+uint32_t SHT2x::getEIDA()
+{
+  uint32_t id = 0;
+  uint8_t buffer[8];
+  writeCmd(0xFA, 0x0F);
+  if (readBytes(8, (uint8_t *) buffer, 10) == false)
+  {
+    _error = SHT2x_ERR_READBYTES;
+    return false;
+  }
+  for (uint8_t i = 0; i < 4; i++)
+  {
+    id <<= 8;
+    id |= buffer[i*2];
+  }
+  return id;
+}
+
+
+uint32_t SHT2x::getEIDB()
+{
+  uint32_t id = 0;
+  uint8_t buffer[8];
+  writeCmd(0xFC, 0xC9);
+  if (readBytes(8, (uint8_t *) buffer, 10) == false)
+  {
+    _error = SHT2x_ERR_READBYTES;
+    return false;
+  }
+  for (uint8_t i = 0; i < 4; i++)
+  {
+    id <<= 8;
+    id |= buffer[i*2];
+  }
+  return id;
+}
+
+
+uint8_t SHT2x::getFirmwareVersion()
+{
+  uint8_t version = 0;
+  writeCmd(0x84, 0xB8);
+  if (readBytes(1, (uint8_t *) &version, 10) == false)
+  {
+    _error = SHT2x_ERR_READBYTES;
+    return false;
+  }
+  return version;
 }
 
 
@@ -309,7 +403,7 @@ bool SHT2x::readBytes(uint8_t n, uint8_t *val, uint8_t maxDuration)
 
 ////////////////////////////////////////////////////////
 //
-// DERIVED
+//  DERIVED SHT
 //
 SHT20::SHT20()
 {
@@ -338,6 +432,26 @@ HTU20::HTU20()
 HTU21::HTU21()
 {
 };
+
+
+////////////////////////////////////////////////////////
+//
+//  DERIVED Si70xx
+//
+Si7013::Si7013()
+{
+};
+
+
+Si7020::Si7020()
+{
+};
+
+
+Si7021::Si7021()
+{
+};
+
 
 
 // -- END OF FILE --
