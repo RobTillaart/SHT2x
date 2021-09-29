@@ -8,7 +8,7 @@
 
 # SHT2x
 
-Arduino library for the SHT2x temperature and humidity sensor.
+Arduino library for the SHT2x and HTU2x temperature and humidity sensors.
 
 
 ## Description
@@ -67,20 +67,20 @@ after you've performed a new **read()**.
 - **int getError()** returns last set error flag and clear it. 
 Be sure to clear the error flag by calling **getError()** before calling any command as the error flag could be from a previous command.
 
-| Error | Symbolic                  | Description                 | Notes    |
-|:-----:|:--------------------------|:----------------------------|:---------|
-| 0x00  | SHT2x_OK                  | no error                    |          |
-| 0x81  | SHT2x_ERR_WRITECMD        | I2C write failed            |          |
-| 0x82  | SHT2x_ERR_READBYTES       | I2C read failed             |          |
-| 0x83  | SHT2x_ERR_HEATER_OFF      | Could not switch off heater |          |
-| 0x84  | SHT2x_ERR_NOT_CONNECT     | Could not connect           |          |
-| 0x85  | SHT2x_ERR_CRC_TEMP        | CRC error in temperature    |          |
-| 0x86  | SHT2x_ERR_CRC_HUM         | CRC error in humidity       |          |
-| 0x87  | SHT2x_ERR_CRC_STATUS      | CRC error in status field   | not used |
-| 0x88  | SHT2x_ERR_HEATER_COOLDOWN | Heater need to cool down    |          |
-| 0x88  | SHT2x_ERR_HEATER_ON       | Could not switch on heater  |          |
+| Value  | Symbolic                  | Description                 | Notes    |
+|:------:|:--------------------------|:----------------------------|:---------|
+|  0x00  | SHT2x_OK                  | no error                    |          |
+|  0x81  | SHT2x_ERR_WRITECMD        | I2C write failed            |          |
+|  0x82  | SHT2x_ERR_READBYTES       | I2C read failed             |          |
+|  0x83  | SHT2x_ERR_HEATER_OFF      | Could not switch off heater |          |
+|  0x84  | SHT2x_ERR_NOT_CONNECT     | Could not connect           |          |
+|  0x85  | SHT2x_ERR_CRC_TEMP        | CRC error in temperature    |          |
+|  0x86  | SHT2x_ERR_CRC_HUM         | CRC error in humidity       |          |
+|  0x87  | SHT2x_ERR_CRC_STATUS      | CRC error in status field   | not used |
+|  0x88  | SHT2x_ERR_HEATER_COOLDOWN | Heater need to cool down    |          |
+|  0x88  | SHT2x_ERR_HEATER_ON       | Could not switch on heater  |          |
 
-Note: the HTU20 / HTU21 have the same error codes.
+Note: the HTU20 / HTU21 classes share the same error codes.
 
 
 #### Heater interface
@@ -110,8 +110,6 @@ Returns false if fails, setting error to **SHT2x_ERR_HEATER_OFF**.
 
 #### Status fields
 
-Need to confirm this information.
-
 From HTU20 datasheet
 
 |  bits  | value  | meaning             |
@@ -122,13 +120,11 @@ From HTU20 datasheet
 |  11    |   3    | closed circuit      |
 
 
-
 ## Future
 
 - test test test test
 - **getSerialNumber()**
-- improve error handling / status. (all code paths)
-- confirm status bits meaning..
+- improve error handling (all code paths)
 - investigate blocking delay() in read - optimize... Q: need async interface?
 
 
