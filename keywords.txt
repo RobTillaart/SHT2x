@@ -29,8 +29,14 @@ getHeatTimeout	KEYWORD2
 heatOn	KEYWORD2
 heatOff	KEYWORD2
 isHeaterOn	KEYWORD2
+setHeaterLevel	KEYWORD2
+getHeaterLevel	KEYWORD2
 
 getError	KEYWORD2
+
+getEIDA	KEYWORD2
+getEIDB	KEYWORD2
+getFirmwareVersion	KEYWORD2
 
 
 # Instances (KEYWORD2)
