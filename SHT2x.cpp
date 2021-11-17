@@ -11,8 +11,10 @@
 //  0.1.0   2021-09-25  initial version
 //  0.1.1   2021-09-28  Add HTU2x derived classes,
 //                      update readme.md + add some status info
-//  0.1.2   2021-09-29  Add Si70xx derived classes 
+//  0.1.2   2021-09-29  Add Si70xx derived classes
 //                      add getEIDA(), getEIDB(), getFirmwareVersion()
+//                      update build-CI, readme.md badges
+//
 
 
 #include "SHT2x.h"
@@ -112,7 +114,7 @@ bool SHT2x::read()
   // _error = SHT2x_ERR_CRC_HUM;
   _rawHumidity = buffer[0] << 8;
   _rawHumidity += buffer[1];
-  _rawHumidity &= 0xFFFC; 
+  _rawHumidity &= 0xFFFC;
 
   _status = buffer[1] & 0x0003;
   if (_status == 0xFF)  // TODO  != 0x02
@@ -332,17 +334,17 @@ uint8_t SHT2x::getFirmwareVersion()
 //
 //  PRIVATE
 //
-uint8_t SHT2x::crc8(const uint8_t *data, uint8_t len) 
+uint8_t SHT2x::crc8(const uint8_t *data, uint8_t len)
 {
   // CRC-8 formula from page 14 of SHT spec pdf
   const uint8_t POLY(0x31);
   uint8_t crc(0xFF);
 
-  for (uint8_t j = len; j; --j) 
+  for (uint8_t j = len; j; --j)
   {
     crc ^= *data++;
 
-    for (uint8_t i = 8; i; --i) 
+    for (uint8_t i = 8; i; --i)
     {
       crc = (crc & 0x80) ? (crc << 1) ^ POLY : (crc << 1);
     }
@@ -384,7 +386,7 @@ bool SHT2x::readBytes(uint8_t n, uint8_t *val, uint8_t maxDuration)
   uint32_t start = millis();
   while (_wire->available() < n)
   {
-    if (millis() - start > maxDuration) 
+    if (millis() - start > maxDuration)
     {
       _error = SHT2x_ERR_READBYTES;
       return false;

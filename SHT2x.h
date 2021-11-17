@@ -23,7 +23,7 @@
 #define SHT2x_STATUS_CLOSED_CIRCUIT   0x03
 
 
-//  error codes 
+//  error codes
 //  kept in sync with SHT31 library
 #define SHT2x_OK                      0x00
 #define SHT2x_ERR_WRITECMD            0x81
@@ -151,7 +151,7 @@ public:
 ////////////////////////////////////////////////////////
 //
 //  DERIVED HTU
-// 
+//
 class HTU20 : public SHT2x
 {
 public:
@@ -169,7 +169,7 @@ public:
 ////////////////////////////////////////////////////////
 //
 //  DERIVED Si70xx
-// 
+//
 class Si7013 : public SHT2x
 {
 public:
