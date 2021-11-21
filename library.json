@@ -21,5 +21,6 @@
   "version": "0.1.2",
   "license": "MIT",
   "frameworks": "arduino",
-  "platforms": "*"
+  "platforms": "*",
+  "headers": "SHT2x.h"
 }
