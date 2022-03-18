@@ -3,7 +3,8 @@
 //  AUTHOR: Rob Tillaart
 // PURPOSE: demo usage 2 I2C ports + SHT2X
 //     URL: https://github.com/RobTillaart/SHT2x
-
+//
+// ESP32 specific
 
 #include "Wire.h"
 #include "SHT2x.h"
