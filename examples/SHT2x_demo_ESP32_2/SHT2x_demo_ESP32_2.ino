@@ -4,10 +4,15 @@
 // PURPOSE: demo usage 2 I2C ports + SHT2X
 //     URL: https://github.com/RobTillaart/SHT2x
 //
-// ESP32 specific
+// ESP32 specific - see issue #7
 
 #include "Wire.h"
 #include "SHT2x.h"
+
+#define SDA_1 21
+#define SCL_1 22
+#define SDA_2 33
+#define SCL_2 32
 
 TwoWire I2Cone = TwoWire(0);
 TwoWire I2Ctwo = TwoWire(1);
@@ -24,6 +29,9 @@ void setup()
   Serial.println(__FILE__);
   Serial.print("SHT2x_LIB_VERSION: \t");
   Serial.println(SHT2x_LIB_VERSION);
+
+  I2Cone.begin(SDA_1, SCL_1);
+  I2Ctwo.begin(SDA_2, SCL_2);
 
   internal.begin(&I2Cone);
   external.begin(&I2Ctwo);
@@ -60,3 +68,4 @@ void loop()
 
 
 // -- END OF FILE --
+
