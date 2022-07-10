@@ -55,8 +55,8 @@ public:
 
   float    getTemperature();
   float    getHumidity();
-  uint16_t getRawTemperature() { return _rawHumidity; };
-  uint16_t getRawHumidity()    { return _rawTemperature; };
+  uint16_t getRawTemperature() { return _rawTemperature; };
+  uint16_t getRawHumidity()    { return _rawHumidity; };
 
   //  might take up to 15 milliseconds.
   bool reset();
