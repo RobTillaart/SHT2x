@@ -39,7 +39,7 @@
 #define SHT2x_ADDRESS                   0x40
 
 
-#define SHT2x_USRREG_RESOLUTION         0xC0
+#define SHT2x_USRREG_RESOLUTION         0x81
 #define SHT2x_USRREG_BATTERY            0x20
 #define SHT2x_USRREG_HEATER             0x04
 
@@ -373,7 +373,9 @@ bool SHT2x::setResolution(uint8_t res)
 
   //  clear old resolution and set new
   userReg &= ~SHT2x_USRREG_RESOLUTION;
-  userReg |= (res << 6);
+  //  resolution is bit 7 and bit 0.
+  userReg |= ((res & 0x02) << 6);
+  userReg |= (res & 0x01);
 
   if (writeCmd(SHT2x_READ_USER_REGISTER, userReg) == false)
   {
