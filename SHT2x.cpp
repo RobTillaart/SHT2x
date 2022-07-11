@@ -105,7 +105,7 @@ bool SHT2x::read()
   }
   if (crc8(buffer, 2) != buffer[2])
   {
-    error = SHT2x_ERR_CRC_TEMP;
+    _error = SHT2x_ERR_CRC_TEMP;
   //  return false;  // do not fail yet
   }
   _rawTemperature  = buffer[0] << 8;
@@ -128,7 +128,7 @@ bool SHT2x::read()
   }
   if (crc8(buffer, 2) != buffer[2])
   {
-    error = SHT2x_ERR_CRC_HUM;
+    _error = SHT2x_ERR_CRC_HUM;
   //    return false;  // do not fail yet
   }
   _rawHumidity  = buffer[0] << 8;
