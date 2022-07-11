@@ -176,10 +176,6 @@ experimental 0.2.0 - needs testing.
 - test test test
   - get hardware
 - improve documentation
-- improve error handling (all code paths)
-- investigate blocking delay() in read 
-  - optimize... Q: need async interface?
-- add crc8 check (need sensor)
 - fix TODO in code (.cpp and .h)
 - add examples
   - test resolutions
@@ -189,8 +185,12 @@ experimental 0.2.0 - needs testing.
 
 #### 0.3.0
 
+- add crc8 check (need sensor)
 - improve error handling (all code paths)
-
+- investigate blocking delay() in read 
+  - **ASYNC** NO HOLD call to read T or H
+  - **void requestTemperature()** ==> **void readTemperature()**
+  - **void requestHumidity()** ==> **void readHumidity()**
 
 #### wont
 

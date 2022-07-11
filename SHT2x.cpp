@@ -103,12 +103,11 @@ bool SHT2x::read()
     _error = SHT2x_ERR_READBYTES;
     return false;
   }
-  //  TODO CRC8 check
-  //  if (crc8(buffer, 2) != buffer[2])
-  //  {
-  //    error = SHT2x_ERR_CRC_TEMP;
-  //    return false;
-  //  }
+  if (crc8(buffer, 2) != buffer[2])
+  {
+    error = SHT2x_ERR_CRC_TEMP;
+  //  return false;  // do not fail yet
+  }
   _rawTemperature  = buffer[0] << 8;
   _rawTemperature += buffer[1];
   _rawTemperature &= 0xFFFC;
@@ -127,12 +126,11 @@ bool SHT2x::read()
   {
     return false;
   }
-  //  TODO CRC8 check
-  //  if (crc8(buffer, 2) != buffer[2])
-  //  {
-  //    error = SHT2x_ERR_CRC_HUM;
-  //    return false;
-  //  }
+  if (crc8(buffer, 2) != buffer[2])
+  {
+    error = SHT2x_ERR_CRC_HUM;
+  //    return false;  // do not fail yet
+  }
   _rawHumidity  = buffer[0] << 8;
   _rawHumidity += buffer[1];
   _rawHumidity &= 0xFFFC;     //  TODO is this mask OK? as humidity is max 12 bit..
@@ -415,8 +413,9 @@ bool SHT2x::batteryOK()
 uint8_t SHT2x::crc8(const uint8_t *data, uint8_t len)
 {
   // CRC-8 formula from page 14 of SHT spec pdf
-  const uint8_t POLY(0x31);
-  uint8_t crc(0xFF);
+  // Sensirion_Humidity_Sensors_SHT2x_CRC_Calculation.pdf
+  const uint8_t POLY = 0x31;
+  uint8_t crc = 0x00;
 
   for (uint8_t j = len; j; --j)
   {
