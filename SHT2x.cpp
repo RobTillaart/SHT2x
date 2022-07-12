@@ -20,8 +20,9 @@
 //
 //  0.2.0   2022-07-10  Fix #11 RawTemp + rawHum (kudos to theandy94)
 //                      add experimental getResolution() + setResolution()
+//                      adjust read delay
 //                      add experimental batteryOK()
-//
+//                      add CRC in read() - no fail.
 
 
 #include "SHT2x.h"
@@ -97,7 +98,12 @@ bool SHT2x::read()
 
   //  TEMPERATURE
   writeCmd(SHT2x_GET_TEMPERATURE_NO_HOLD);
-  delay(70);
+  //  table 7 
+  if      (_resolution == 3) delay(11);  //  11 bit
+  else if (_resolution == 1) delay(22);  //  12 bit
+  else if (_resolution == 2) delay(43);  //  13 bit
+  else                       delay(85);  //  14 bit
+
   if (readBytes(3, (uint8_t*) &buffer[0], 90) == false)
   {
     _error = SHT2x_ERR_READBYTES;
@@ -121,7 +127,12 @@ bool SHT2x::read()
 
   //  HUMIDITY
   writeCmd(SHT2x_GET_HUMIDITY_NO_HOLD);
-  delay(30);
+  //  table 7 
+  if      (_resolution == 1) delay(4);   //   8 bit
+  else if (_resolution == 2) delay(9);   //  10 bit
+  else if (_resolution == 3) delay(15);  //  11 bit
+  else                       delay(29);  //  12 bit
+
   if (readBytes(3, (uint8_t*) &buffer[0], 30) == false)
   {
     return false;

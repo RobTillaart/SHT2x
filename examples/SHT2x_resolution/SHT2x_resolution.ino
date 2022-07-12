@@ -40,7 +40,7 @@ void loop()
   {
     sht.setResolution(res);
     Serial.print("RES:\t");
-    Serial.println(sht.getResolution());
+    Serial.print(sht.getResolution());
     delay(100);
 
     start = micros();
@@ -50,9 +50,9 @@ void loop()
     Serial.print("\t");
     Serial.print(stop - start);
     Serial.print("\t");
-    Serial.print(sht.getTemperature(), 1);
+    Serial.print(sht.getTemperature(), 3);
     Serial.print("\t");
-    Serial.println(sht.getHumidity(), 1);
+    Serial.println(sht.getHumidity(), 3);
     delay(1000);
   }
 }
