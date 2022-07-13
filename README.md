@@ -148,25 +148,39 @@ From HTU20 datasheet
 
 ### Resolution
 
-experimental 0.2.0 - needs testing if the math is OK for all resolutions.
+**Warning experimental** 
+- needs more testing as results are not in line with the datasheet.
+- only tested on a HTUxx sensor.
+- tested with **SHT2X_resolution.ino**
 
 - **void setResolution(uint8_t res)** res = 0..3, other values return false.
 - **uint8_t getResolution()** returns resolution set 0..3.
-        
-|  res  |  Humidity | Temperature |
-|:-----:|:---------:|:-----------:|
-|   0   |  12 bit   |   14  bit   |
-|   1   |  08 bit   |   12  bit   |
-|   2   |  10 bit   |   13  bit   |
-|   3   |  11 bit   |   11  bit   |
 
- 
-See datasheet SHT20 Table 7 (timing) and Table 8 (resolution)
+
+Datasheet SHT20 Table 8: (resolution)
+
+|  RES  |  Humidity | Temperature |
+|:-----:|:---------:|:-----------:|
+|   0   |  12 bit   |    14 bit   |
+|   1   |  08 bit   |    12 bit   |
+|   2   |  10 bit   |    13 bit   |
+|   3   |  11 bit   |    11 bit   |
+
+Datasheet SHT20 Table 7: (timing) and results of real measurements.
+( https://github.com/RobTillaart/SHT2x/pull/11 )
+
+|  RES  |  HUM  |  TEMP  |  TOTAL  |  REAL  |
+|:-----:|:-----:|:------:|:-------:|:------:|
+|   0   |   29  |   85   |   114   |   116  |
+|   1   |    4  |   22   |    26   |   113  |
+|   2   |    9  |   43   |    52   |   084  |
+|   3   |   15  |   11   |    26   |   102  |
+
+Timing in milliseconds.
+
 
  
 ### Battery
-
-experimental 0.2.0 - needs testing.
 
 - **bool batteryOK()** returns true if VCC > 2.5 Volts.
 
@@ -175,6 +189,7 @@ experimental 0.2.0 - needs testing.
 
 - test test test
   - get hardware
+- investigate resolution anomalies
 - improve documentation
 - fix TODO in code (.cpp and .h)
 - add examples
@@ -182,6 +197,7 @@ experimental 0.2.0 - needs testing.
   - performance different resolutions
   - test battery
 - update unit tests
+
 
 #### 0.3.0
 
