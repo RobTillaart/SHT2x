@@ -31,30 +31,36 @@ void setup()
   Serial.print("BATT:\t");
   Serial.print(sht.batteryOK() ? "OK" : "FAIL");
   Serial.println();
+
+  for (uint8_t res = 0; res < 4; res++)
+  {
+    for (uint8_t times = 0; times < 5; times++)
+    {
+      sht.setResolution(res);
+      Serial.print("RES:\t");
+      Serial.print(sht.getResolution());
+      delay(100);
+
+      start = micros();
+      sht.read();
+      stop = micros();
+
+      Serial.print("\t");
+      Serial.print(stop - start);
+      Serial.print("\t");
+      Serial.print(sht.getTemperature(), 3);
+      Serial.print("\t");
+      Serial.println(sht.getHumidity(), 3);
+      delay(3000);
+    }
+  }
+  Serial.println("\ndone...");
 }
 
 
 void loop()
 {
-  for (uint8_t res = 0; res < 4; res++)
-  {
-    sht.setResolution(res);
-    Serial.print("RES:\t");
-    Serial.print(sht.getResolution());
-    delay(100);
 
-    start = micros();
-    sht.read();
-    stop = micros();
-
-    Serial.print("\t");
-    Serial.print(stop - start);
-    Serial.print("\t");
-    Serial.print(sht.getTemperature(), 3);
-    Serial.print("\t");
-    Serial.println(sht.getHumidity(), 3);
-    delay(1000);
-  }
 }
 
 
