@@ -119,7 +119,7 @@ public:
   bool      batteryOK();
 
 
-private:
+protected:
   uint8_t   crc8(const uint8_t *data, uint8_t len);
 
   bool      writeCmd(uint8_t cmd);
