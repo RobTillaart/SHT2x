@@ -1,7 +1,7 @@
 //
 //    FILE: SHT2x.cpp
 //  AUTHOR: Rob Tillaart, Viktor Balint
-// VERSION: 0.2.1
+// VERSION: 0.2.2
 //    DATE: 2021-09-25
 // PURPOSE: Arduino library for the SHT2x temperature and humidity sensor
 //     URL: https://github.com/RobTillaart/SHT2x
@@ -74,18 +74,89 @@ bool SHT2x::isConnected()
 }
 
 
+/////////////////////////////////////////////////////////
+//
+//  SYNCHRONOUS INTERFACE
+//
 bool SHT2x::read()
 {
-  uint8_t buffer[3];
-
   //  TEMPERATURE
-  writeCmd(SHT2x_GET_TEMPERATURE_NO_HOLD);
-  //  table 7 
-  if      (_resolution == 3) delay(11);  //  11 bit
-  else if (_resolution == 1) delay(22);  //  12 bit
-  else if (_resolution == 2) delay(43);  //  13 bit
-  else                       delay(85);  //  14 bit
+  if (requestTemperature() == false) return false;
+  while (reqTempReady() == false)
+  {
+    yield();
+  };
+  if (readTemperature() == false) return false;
 
+  //  HUMIDITY
+  if (requestHumidity() == false) return false;
+  while (reqHumReady() == false)
+  {
+    yield();
+  };
+  if (readHumidity() == false) return false;
+  return true;
+
+
+}
+
+
+/////////////////////////////////////////////////////////
+//
+//  ASYNCHRONOUS INTERFACE
+//
+bool SHT2x::requestTemperature()
+{
+  writeCmd(SHT2x_GET_TEMPERATURE_NO_HOLD);
+  _lastRequest = millis();
+  return true;
+}
+
+
+bool SHT2x::requestHumidity()
+{
+  writeCmd(SHT2x_GET_HUMIDITY_NO_HOLD);
+  _lastRequest = millis();
+  return true;
+}
+
+
+bool SHT2x::reqTempReady()
+{
+  //  table 7 
+  uint32_t waiting = millis() - _lastRequest;
+
+  if (waiting < 11)    return false;
+  if (resolution == 3) return true;
+  if (waiting < 22)    return false;
+  if (resolution == 1) return true;
+  if (waiting < 43)    return false;
+  if (resolution == 2) return true;
+  if (waiting < 85)    return false;
+  return true;
+}
+
+
+bool SHT2x::reqHumReady()
+{
+  //  table 7 
+  uint32_t waiting = millis() - _lastRequest;
+
+  if (waiting < 4)     return false;
+  if (resolution == 1) return true;      //   8 bit
+  if (waiting < 9)     return false;
+  if (resolution == 2) return true;      //  10 bit
+  if (waiting < 15)    return false;
+  if (resolution == 3) return true;      //  11 bit
+  if (waiting < 29)    return false;
+  return true;                           //  12 bit
+}
+
+
+bool SHT2x::readTemperature()
+{
+  uint8_t buffer[3];
+  
   if (readBytes(3, (uint8_t*) &buffer[0], 90) == false)
   {
     _error = SHT2x_ERR_READBYTES;
@@ -106,14 +177,13 @@ bool SHT2x::read()
     _error = SHT2x_ERR_READBYTES;
     return false;
   }
+  return true;
+}
 
-  //  HUMIDITY
-  writeCmd(SHT2x_GET_HUMIDITY_NO_HOLD);
-  //  table 7 
-  if      (_resolution == 1) delay(4);   //   8 bit
-  else if (_resolution == 2) delay(9);   //  10 bit
-  else if (_resolution == 3) delay(15);  //  11 bit
-  else                       delay(29);  //  12 bit
+
+bool SHT2x::readHumidity()
+{
+  uint8_t buffer[3];
 
   if (readBytes(3, (uint8_t*) &buffer[0], 30) == false)
   {
@@ -141,6 +211,16 @@ bool SHT2x::read()
 }
 
 
+uint32_t SHT2x::lastRequest()
+{
+  return _lastRequest;
+}
+
+
+/////////////////////////////////////////////////////////
+//
+//  TEMPERATURE AND HUMIDTY
+//
 float SHT2x::getTemperature()
 {
   // par 6.2
@@ -167,9 +247,10 @@ uint8_t SHT2x::getStatus()
   return _status;
 }
 
-
+/////////////////////////////////////////////////////////
+//
 //  HEATER
-
+//
 void SHT2x::setHeatTimeout(uint8_t seconds)
 {
   _heatTimeout = seconds;
@@ -295,6 +376,10 @@ int SHT2x::getError()
 }
 
 
+/////////////////////////////////////////////////////////
+//
+//  Electronic Identification Code
+//
 //  Sensirion_Humidity_SHT2x_Electronic_Identification_Code_V1.1.pdf
 uint32_t SHT2x::getEIDA()
 {
@@ -352,6 +437,10 @@ uint8_t SHT2x::getFirmwareVersion()
 }
 
 
+/////////////////////////////////////////////////////////
+//
+//  RESOLUTION
+//
 bool SHT2x::setResolution(uint8_t res)
 {
   if (res > 3) return false;
@@ -386,6 +475,10 @@ uint8_t SHT2x::getResolution()
 };
 
 
+/////////////////////////////////////////////////////////
+//
+//  OTHER
+//
 bool SHT2x::batteryOK()
 {
   uint8_t userReg = 0x00;
@@ -403,7 +496,7 @@ bool SHT2x::batteryOK()
 
 //////////////////////////////////////////////////////////
 //
-//  PRIVATE
+//  PROTECTED
 //
 uint8_t SHT2x::crc8(const uint8_t *data, uint8_t len)
 {
