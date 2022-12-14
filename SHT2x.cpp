@@ -126,13 +126,13 @@ bool SHT2x::reqTempReady()
   //  table 7 
   uint32_t waiting = millis() - _lastRequest;
 
-  if (waiting < 11)    return false;
-  if (resolution == 3) return true;
-  if (waiting < 22)    return false;
-  if (resolution == 1) return true;
-  if (waiting < 43)    return false;
-  if (resolution == 2) return true;
-  if (waiting < 85)    return false;
+  if (waiting < 11)     return false;
+  if (_resolution == 3) return true;
+  if (waiting < 22)     return false;
+  if (_resolution == 1) return true;
+  if (waiting < 43)     return false;
+  if (_resolution == 2) return true;
+  if (waiting < 85)     return false;
   return true;
 }
 
@@ -142,14 +142,14 @@ bool SHT2x::reqHumReady()
   //  table 7 
   uint32_t waiting = millis() - _lastRequest;
 
-  if (waiting < 4)     return false;
-  if (resolution == 1) return true;      //   8 bit
-  if (waiting < 9)     return false;
-  if (resolution == 2) return true;      //  10 bit
-  if (waiting < 15)    return false;
-  if (resolution == 3) return true;      //  11 bit
-  if (waiting < 29)    return false;
-  return true;                           //  12 bit
+  if (waiting < 4)      return false;
+  if (_resolution == 1) return true;      //   8 bit
+  if (waiting < 9)      return false;
+  if (_resolution == 2) return true;      //  10 bit
+  if (waiting < 15)     return false;
+  if (_resolution == 3) return true;      //  11 bit
+  if (waiting < 29)     return false;
+  return true;                            //  12 bit
 }
 
 
