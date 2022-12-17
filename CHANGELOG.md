@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## [0.2.2] - 2022-12-14
-- add (experimental) asynchronous interface
+- add experimental asynchronous interface
+- add async example
 
 
 ## [0.2.1] - 2022-11-24

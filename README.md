@@ -84,12 +84,13 @@ Note: The raw temperature and raw humidity are ideal to minimize storage or to m
 Experimental since 0.2.2 this interface can change in the future
 Discussion see https://github.com/RobTillaart/SHT2x/issues/16
 
-- ** bool requestTemperature()**
-- ** bool requestHumidity()**
-- ** bool reqTempReady()**
-- ** bool reqHumReady()**
-- ** bool readTemperature()**
-- ** bool readHumidity()**
+- **bool requestTemperature()**
+- **bool requestHumidity()**
+- **bool reqTempReady()**
+- **bool reqHumReady()**
+- **bool readTemperature()**
+- **bool readHumidity()**
+- **uint32_t lastRequest()**
 
 TODO elaborate documentation.
 
@@ -202,7 +203,7 @@ Timing in milliseconds.
 
 ## Future
 
-#### must
+#### Must
 - improve documentation
 - clean up code.
 
@@ -211,12 +212,18 @@ Timing in milliseconds.
 - add crc8 check (need sensor)
 - improve error handling (all code paths)
 - investigate blocking delay() in read 
-  - **ASYNC** NO HOLD call to read T or H
-  - **void requestTemperature()** ==> **void readTemperature()**
-  - **void requestHumidity()** ==> **void readHumidity()**
 - add offset for temperature and humidity
 - move code from .h to .cpp 
 - add GY21 as derived class name
+
+
+#### ASYNC 0.3.0
+improvements for interface.
+
+- **bool requestReady()** checks both. 
+- **bool requestPending()** checks . 
+- **uint8_t getRequestType()** returns 0, 1, 2
+- documentation
 
 
 #### Should

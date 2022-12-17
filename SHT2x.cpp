@@ -26,10 +26,20 @@
 #define SHT2x_USRREG_BATTERY            0x20
 #define SHT2x_USRREG_HEATER             0x04
 
+#define SHT2x_REQ_NONE                  0x00
+#define SHT2x_REQ_TEMPERATURE           0x01
+#define SHT2x_REQ_HUMIDITY              0x02
 
+
+//////////////////////////////////////////////////////////////
+//
+//  PUBLIC
+//
 SHT2x::SHT2x()
 {
   _lastRead       = 0;
+  _lastRequest    = 0;
+  _requestType    = 0;
   _rawTemperature = 0;
   _rawHumidity    = 0;
   _heatTimeout    = 0;
@@ -96,8 +106,6 @@ bool SHT2x::read()
   };
   if (readHumidity() == false) return false;
   return true;
-
-
 }
 
 
@@ -109,6 +117,7 @@ bool SHT2x::requestTemperature()
 {
   writeCmd(SHT2x_GET_TEMPERATURE_NO_HOLD);
   _lastRequest = millis();
+  _requestType = SHT2x_REQ_TEMPERATURE;
   return true;
 }
 
@@ -117,15 +126,17 @@ bool SHT2x::requestHumidity()
 {
   writeCmd(SHT2x_GET_HUMIDITY_NO_HOLD);
   _lastRequest = millis();
+  _requestType = SHT2x_REQ_HUMIDITY;
   return true;
 }
 
 
 bool SHT2x::reqTempReady()
 {
-  //  table 7 
-  uint32_t waiting = millis() - _lastRequest;
+  if (_requestType != SHT2x_REQ_TEMPERATURE) return false;
 
+  uint32_t waiting = millis() - _lastRequest;
+  //  table 7
   if (waiting < 11)     return false;
   if (_resolution == 3) return true;
   if (waiting < 22)     return false;
@@ -139,9 +150,10 @@ bool SHT2x::reqTempReady()
 
 bool SHT2x::reqHumReady()
 {
-  //  table 7 
-  uint32_t waiting = millis() - _lastRequest;
+  if (_requestType != SHT2x_REQ_HUMIDITY) return false;
 
+  uint32_t waiting = millis() - _lastRequest;
+  //  table 7
   if (waiting < 4)      return false;
   if (_resolution == 1) return true;      //   8 bit
   if (waiting < 9)      return false;
@@ -156,7 +168,7 @@ bool SHT2x::reqHumReady()
 bool SHT2x::readTemperature()
 {
   uint8_t buffer[3];
-  
+
   if (readBytes(3, (uint8_t*) &buffer[0], 90) == false)
   {
     _error = SHT2x_ERR_READBYTES;
@@ -170,6 +182,9 @@ bool SHT2x::readTemperature()
   _rawTemperature  = buffer[0] << 8;
   _rawTemperature += buffer[1];
   _rawTemperature &= 0xFFFC;
+
+  //  clear requestType
+  _requestType = SHT2x_REQ_NONE;
 
   _status = buffer[1] & 0x0003;
   if (_status == 0xFF)  // TODO  != 0x01  (need HW to test)
@@ -197,6 +212,9 @@ bool SHT2x::readHumidity()
   _rawHumidity  = buffer[0] << 8;
   _rawHumidity += buffer[1];
   _rawHumidity &= 0xFFFC;     //  TODO is this mask OK? as humidity is max 12 bit..
+
+  //  clear requestType
+  _requestType = SHT2x_REQ_NONE;
 
   _status = buffer[1] & 0x0003;
   if (_status == 0xFF)        //  TODO  != 0x02  (need HW to test)

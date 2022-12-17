@@ -32,6 +32,7 @@ void loop()
 {
   if (sht.reqTempReady())
   {
+    sht.readTemperature();
     Serial.print("TEMP:\t");
     Serial.println(sht.getTemperature(), 1);
     sht.requestTemperature();

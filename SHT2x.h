@@ -135,9 +135,14 @@ protected:
   bool      readBytes(uint8_t n, uint8_t *val, uint8_t maxDuration);
   TwoWire* _wire;
 
-  uint8_t   _heatTimeout;   //  seconds
   uint32_t  _lastRead;
-  uint32_t  _lastRequest;   //  for async interface
+
+  //  for async interface
+  uint32_t  _lastRequest;
+  //  0 = none  1 = temp  2 = hum
+  uint8_t   _requestType;
+
+  uint8_t   _heatTimeout;   //  seconds
   uint32_t  _heaterStart;
   uint32_t  _heaterStop;
   bool      _heaterOn;

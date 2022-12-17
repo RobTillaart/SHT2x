@@ -44,6 +44,7 @@ reqTempReady	KEYWORD2
 reqHumReady	KEYWORD2
 readTemperature	KEYWORD2
 readHumidity	KEYWORD2
+lastRequest	KEYWORD2
 
 
 # Instances (KEYWORD2)
