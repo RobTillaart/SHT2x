@@ -247,6 +247,9 @@ Timing in milliseconds.
 #### 0.4.1
 - fix reset(): clear state of resolution, heater and error
 
+#### 0.4.2
+- add readTemperatureForHumidity()
+
 #### Should
 
 - test test test

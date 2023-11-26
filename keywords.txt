@@ -49,6 +49,7 @@ reqHumReady	KEYWORD2
 requestReady	KEYWORD2
 readTemperature	KEYWORD2
 readHumidity	KEYWORD2
+readTemperatureForHumidity	KEYWORD2
 lastRequest	KEYWORD2
 getRequestType	KEYWORD2
 
