@@ -1,5 +1,5 @@
 //
-//    FILE: SHT2x_demo_async_fast_HT.ino
+//    FILE: Si70xx_demo_async_fast_HT.ino
 //  AUTHOR: JensB
 // PURPOSE: demo asynchronous interface
 //     URL: https://github.com/RobTillaart/SHT2x
@@ -14,7 +14,7 @@
 
 #include "SHT2x.h"
 
-SHT2x sht;
+Si7021 dhtSensor;
 
 
 void setup()
@@ -26,7 +26,7 @@ void setup()
 
   // connect to sensor
   Wire.begin();
-  while (!sht.isConnected()) 
+  while (!dhtSensor.isConnected()) 
   {
     Serial.print("*");
     delay(1);
@@ -34,9 +34,9 @@ void setup()
   Serial.println();
 
   // soft reset sensor
-  sht.reset();
+  dhtSensor.reset();
   delay(5); // ~5 ms for soft reset to complete
-  while (!sht.isConnected()) 
+  while (!dhtSensor.isConnected()) 
   {
     Serial.print("*");
     delay(1);
@@ -44,10 +44,10 @@ void setup()
   Serial.println();
 
   // change resolution to 11 bits
-  if (!sht.setResolution(3)) // 3: 11 bits / 0.08 °C / 0.05 % / ~18 ms - see datasheet
+  if (!dhtSensor.setResolution(3)) // 3: 11 bits / 0.08 °C / 0.05 % / ~18 ms - see datasheet
   {
     Serial.print("set resolution error:\t");
-    Serial.println(sht.getError());      
+    Serial.println(dhtSensor.getError());      
   }
 }
 
@@ -56,12 +56,12 @@ void loop()
 {
   uint32_t from = millis();
   
-  if (sht.isConnected())
+  if (dhtSensor.isConnected())
   {
     // async request humidity and wait for completion
-    sht.requestHumidity();  
+    dhtSensor.requestHumidity();  
     int available = 20; // [ms] choose a value that is at least 10 % higher that the measurement time from the datasheet
-    while (!sht.reqHumReady() && (available-- > 0))
+    while (!dhtSensor.reqHumReady() && (available-- > 0))
     {
       delay(1); // or do something else here
     }
@@ -69,24 +69,24 @@ void loop()
     // retrieve humidity and temperature values
     if (available)
     {
-      if (!sht.readHumidity())
+      if (!dhtSensor.readHumidity())
       {
         Serial.print("read humidity error:\t");
-        Serial.println(sht.getError());  
+        Serial.println(dhtSensor.getError());  
       }
       else
       {
-        if (!sht.readTemperatureForHumidity())
+        if (!dhtSensor.readTemperatureForHumidity())
         {
           Serial.print("read temp error:\t");
-          Serial.println(sht.getError());  
+          Serial.println(dhtSensor.getError());  
         }   
       }
     
       Serial.print("TEMP:\t");
-      Serial.println(sht.getTemperature(), 1);
+      Serial.println(dhtSensor.getTemperature(), 1);
       Serial.print("HUMI:\t");
-      Serial.println(sht.getHumidity(), 1);
+      Serial.println(dhtSensor.getHumidity(), 1);
     }
     else
     {
