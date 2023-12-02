@@ -9,7 +9,7 @@
 // - saves separate conversion cycle for the temperature
 //   by reading back the temperature that was established
 //   with the last humidity measurement
-// 
+//
 
 
 #include "SHT2x.h"
@@ -26,7 +26,7 @@ void setup()
 
   // connect to sensor
   Wire.begin();
-  while (!dhtSensor.isConnected()) 
+  while (!dhtSensor.isConnected())
   {
     Serial.print("*");
     delay(1);
@@ -36,7 +36,7 @@ void setup()
   // soft reset sensor
   dhtSensor.reset();
   delay(5); // ~5 ms for soft reset to complete
-  while (!dhtSensor.isConnected()) 
+  while (!dhtSensor.isConnected())
   {
     Serial.print("*");
     delay(1);
@@ -47,7 +47,7 @@ void setup()
   if (!dhtSensor.setResolution(3)) // 3: 11 bits / 0.08 °C / 0.05 % / ~18 ms - see datasheet
   {
     Serial.print("set resolution error:\t");
-    Serial.println(dhtSensor.getError());      
+    Serial.println(dhtSensor.getError());
   }
 }
 
@@ -55,11 +55,11 @@ void setup()
 void loop()
 {
   uint32_t from = millis();
-  
+
   if (dhtSensor.isConnected())
   {
     // async request humidity and wait for completion
-    dhtSensor.requestHumidity();  
+    dhtSensor.requestHumidity();
     int available = 20; // [ms] choose a value that is at least 10 % higher that the measurement time from the datasheet
     while (!dhtSensor.reqHumReady() && (available-- > 0))
     {
@@ -72,17 +72,17 @@ void loop()
       if (!dhtSensor.readHumidity())
       {
         Serial.print("read humidity error:\t");
-        Serial.println(dhtSensor.getError());  
+        Serial.println(dhtSensor.getError());
       }
       else
       {
-        if (!dhtSensor.readTemperatureForHumidity())
+        if (!dhtSensor.readCachedTemperature())
         {
           Serial.print("read temp error:\t");
-          Serial.println(dhtSensor.getError());  
-        }   
+          Serial.println(dhtSensor.getError());
+        }
       }
-    
+
       Serial.print("TEMP:\t");
       Serial.println(dhtSensor.getTemperature(), 1);
       Serial.print("HUMI:\t");
@@ -90,19 +90,19 @@ void loop()
     }
     else
     {
-      Serial.println("requesting humidity failed");    
+      Serial.println("requesting humidity failed");
     }
-    
+
     uint32_t now = millis();
     Serial.print("TIME:\t");
-    Serial.println(now - from);  
-    Serial.println();  
+    Serial.println(now - from);
+    Serial.println();
   }
   else
   {
-    Serial.println("sensor not connected");    
+    Serial.println("sensor not connected");
   }
-  
+
   // do other things here
   delay(1000);
 }

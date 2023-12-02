@@ -230,7 +230,7 @@ bool SHT2x::readHumidity()
 }
 
 
-bool SHT2x::readTemperatureForHumidity()
+bool SHT2x::readCachedTemperature()
 {
   if (_error == SHT2x_OK)
   {

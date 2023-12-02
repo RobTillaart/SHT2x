@@ -169,7 +169,9 @@ protected:
   bool      writeCmd(uint8_t cmd);
   bool      writeCmd(uint8_t cmd, uint8_t value);
   bool      readBytes(uint8_t n, uint8_t *val, uint8_t maxDuration);
-  bool      readTemperatureForHumidity();
+
+  /** can be called after requesting temperature or humidity */
+  bool      readCachedTemperature();
 
   TwoWire* _wire;
 
@@ -247,7 +249,7 @@ class Si7013 : public SHT2x
 {
 public:
   Si7013(TwoWire *wire = &Wire);
-  using SHT2x::readTemperatureForHumidity;
+  using SHT2x::readCachedTemperature;
 };
 
 
@@ -255,7 +257,7 @@ class Si7020 : public SHT2x
 {
 public:
   Si7020(TwoWire *wire = &Wire);
-  using SHT2x::readTemperatureForHumidity;
+  using SHT2x::readCachedTemperature;
 };
 
 
@@ -263,7 +265,7 @@ class Si7021 : public SHT2x
 {
 public:
   Si7021(TwoWire *wire = &Wire);
-  using SHT2x::readTemperatureForHumidity;
+  using SHT2x::readCachedTemperature;
 };
 
 
