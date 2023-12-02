@@ -101,7 +101,7 @@ measurement and that includes the humidity measurement. It can be used after a c
 requiring a separate acquisition. It can also be used in combination with a temperature
 measurement and will return the same value as **getTemperature()**. Several calling sequences
 have be tested and the results can be found in a [comment](https://github.com/RobTillaart/SHT2x/pull/27#issuecomment-1836718214)
-of [pull request #27](https://github.com/RobTillaart/SHT2x/issues/pull/27).
+of [pull request #27](https://github.com/RobTillaart/SHT2x/pull/27).
 
 - **bool readCachedTemperature()** calculates the humidity from raw measurement.
 
