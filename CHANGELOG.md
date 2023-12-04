@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## [0.4.2] - 2023-11-25
-- add **readTemperatureForHumidity()** to async interface
+- add **readCachedTemperature()** to async interface
 - update readme.md
 
 ## [0.4.1] - 2023-11-25
