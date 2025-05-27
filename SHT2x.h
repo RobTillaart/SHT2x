@@ -2,7 +2,7 @@
 //
 //    FILE: SHT2x.h
 //  AUTHOR: Rob Tillaart, Viktor Balint, JensB
-// VERSION: 0.5.0
+// VERSION: 0.5.1
 //    DATE: 2023-11-25
 // PURPOSE: Arduino library for the SHT2x temperature and humidity sensor
 //     URL: https://github.com/RobTillaart/SHT2x
@@ -13,7 +13,7 @@
 #include "Wire.h"
 
 
-#define SHT2x_LIB_VERSION             (F("0.5.0"))
+#define SHT2x_LIB_VERSION             (F("0.5.1"))
 
 
 //  fields getStatus
@@ -190,11 +190,13 @@ public:
   SHT20(TwoWire *wire = &Wire);
 };
 
+
 class SHT21 : public SHT2x
 {
 public:
   SHT21(TwoWire *wire = &Wire);
 };
+
 
 class SHT25 : public SHT2x
 {
@@ -209,6 +211,7 @@ class HTU20 : public SHT2x
 public:
   HTU20(TwoWire *wire = &Wire);
 };
+
 
 class HTU21 : public SHT2x
 {
@@ -226,12 +229,14 @@ public:
   using SHT2x::readCachedTemperature; // Make protected base method public for this derived class.
 };
 
+
 class Si7020 : public SHT2x
 {
 public:
   Si7020(TwoWire *wire = &Wire);
   using SHT2x::readCachedTemperature;
 };
+
 
 class Si7021 : public SHT2x
 {
@@ -247,6 +252,7 @@ class GY21 : public SHT2x
 public:
   GY21(TwoWire *wire = &Wire);
 };
+
 
 //  -- END OF FILE --
 

@@ -46,8 +46,6 @@
 
 uint8_t expect; // Changed from int to uint8_t for type correctness with error/status codes.
 
-// uint32_t start, stop; // These seem unused, consider removing if not needed for future timing tests.
-
 
 unittest_setup()
 {
@@ -90,7 +88,7 @@ unittest(test_constants_2)
 
 unittest(test_constructor)
 {
-  SHT2x sht; // Test default constructor
+  SHT2x sht; //  Test default constructor
 
   // Minimal check to ensure constructor doesn't crash.
   // Further state is checked in test_begin.
@@ -110,6 +108,7 @@ unittest(test_begin)
   // Whether it "succeeds" without hardware is less critical than it not crashing.
   assertEqual(true, b); // Assuming Wire mock behaves well or no actual check fails catastrophically.
 
+  assertTrue(sht.reset());
   expect = SHT2x_OK; // Error should be OK after a successful begin()/reset().
   assertEqual(expect, sht.getError());
 
@@ -196,13 +195,21 @@ unittest(test_heater)
   // expect = SHT2x_ERR_READBYTES; // Or SHT2x_ERR_WRITECMD
   // assertEqual(expect, sht.getError());
 
+  // assertFalse(sht.heatOff());
+  // expect = SHT2x_ERR_READBYTES;
+  // assertEqual(expect, sht.getError());
+
+  // assertFalse(sht.isHeaterOn());
+  // expect = SHT2x_OK;
+  // assertEqual(expect, sht.getError());
+
   // As with test_read, making these meaningful without a mock is difficult.
   // The main check is that the functions exist and can be called.
   assertTrue(true); // Placeholder
 }
 
 
-/*
+
 unittest(test_resolution)
 {
   SHT2x sht;
@@ -219,6 +226,7 @@ unittest(test_resolution)
   assertEqual(expect, sht.getError()); 
   assertEqual(0, sht.getResolution()); // Resolution should remain unchanged.
 
+/*
   // Test valid resolution settings
   // These calls interact with hardware, so they might not truly succeed without a sensor,
   // but we can check if the function returns true (indicating command sent, though Wire mock might always allow this) 
@@ -233,11 +241,11 @@ unittest(test_resolution)
     // assertEqual(expect, sht.getError()); 
     assertEqual(res, sht.getResolution()); // Check if cached value is updated
   }
+*/
   // Reset to default for subsequent tests if any
   assertTrue(sht.setResolution(0));
   assertEqual(0, sht.getResolution());
 }
-*/
 
 
 unittest(test_heater_timeout)
