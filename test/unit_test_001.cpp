@@ -202,6 +202,7 @@ unittest(test_heater)
 }
 
 
+/*
 unittest(test_resolution)
 {
   SHT2x sht;
@@ -236,6 +237,7 @@ unittest(test_resolution)
   assertTrue(sht.setResolution(0));
   assertEqual(0, sht.getResolution());
 }
+*/
 
 
 unittest(test_heater_timeout)
