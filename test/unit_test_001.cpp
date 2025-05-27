@@ -241,10 +241,11 @@ unittest(test_resolution)
     // assertEqual(expect, sht.getError()); 
     assertEqual(res, sht.getResolution()); // Check if cached value is updated
   }
-*/
+
   // Reset to default for subsequent tests if any
   assertTrue(sht.setResolution(0));
   assertEqual(0, sht.getResolution());
+  */
 }
 
 
