@@ -2,6 +2,7 @@
 //    FILE: SHT2x_battery_check.ino
 //  AUTHOR: Rob Tillaart
 // PURPOSE: Demo for SHT2x sensor battery check functionality
+//     URL: https://github.com/RobTillaart/SHT2x
 //
 //  This example sketch demonstrates how to:
 //  - Initialize the SHT2x sensor.
@@ -22,11 +23,14 @@
 // SHT2x sensor;  // Generic base class
 SHT21 sensor;     // Example using SHT21
 
+
 void setup() {
   Serial.begin(115200);
+  Serial.println();
   Serial.println(__FILE__);
-  Serial.print("SHT2x_LIB_VERSION: ");
+  Serial.print("SHT2x_LIB_VERSION: \t");
   Serial.println(SHT2x_LIB_VERSION);
+  Serial.println();
 
   Wire.begin();
   if (!sensor.begin()) {
