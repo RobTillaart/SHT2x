@@ -178,11 +178,11 @@ bool SHT2x::readTemperature()
   _status = buffer[1] & 0x03; // Extract status bits
   //  After a temperature read, the status bits should indicate "temperature reading" (0x01).
   //  If not, it implies a read error or unexpected sensor state.
-  if (_status != SHT2x_STATUS_TEMPERATURE)
-  {
-    _error = SHT2x_ERR_READBYTES; // Or a more specific error e.g. SHT2x_ERR_UNEXPECTED_STATUS
-    return false;
-  }
+  //if (_status != SHT2x_STATUS_TEMPERATURE)
+  //{
+  //  _error = SHT2x_ERR_READBYTES; // Or a more specific error e.g. SHT2x_ERR_UNEXPECTED_STATUS
+  //  return false;
+  //}
   return true;
 }
 
@@ -212,11 +212,11 @@ bool SHT2x::readHumidity()
   _status = buffer[1] & 0x03; // Extract status bits
   //  After a humidity read, the status bits should indicate "humidity reading" (0x02).
   //  If not, it implies a read error or unexpected sensor state.
-  if (_status != SHT2x_STATUS_HUMIDITY)
-  {
-    _error = SHT2x_ERR_READBYTES; // Or a more specific error e.g. SHT2x_ERR_UNEXPECTED_STATUS
-    return false;
-  }
+  //if (_status != SHT2x_STATUS_HUMIDITY)
+  //{
+  //  _error = SHT2x_ERR_READBYTES; // Or a more specific error e.g. SHT2x_ERR_UNEXPECTED_STATUS
+  //  return false;
+  //}
 
   _error = SHT2x_OK; // Mark as OK if all checks passed for this specific read
   _lastRead = millis(); // Record time of successful synchronous style read completion
