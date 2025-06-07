@@ -24,7 +24,7 @@
 
 
 #define SHT2x_USRREG_RESOLUTION            0x81
-#define SHT2x_USRREG_BATTERY               0x20
+#define SHT2x_USRREG_BATTERY               0x40 //sht21 datasheet
 #define SHT2x_USRREG_HEATER                0x04
 
 
@@ -97,7 +97,11 @@ bool SHT2x::read()
 //
 bool SHT2x::requestTemperature()
 {
-  writeCmd(SHT2x_GET_TEMPERATURE_NO_HOLD);
+  if (! writeCmd(SHT2x_GET_TEMPERATURE_NO_HOLD))
+  {
+    _requestType = SHT2x_REQ_FAIL;
+    return false;                      // errore già registrato da writeCmd()
+  }
   _lastRequest = millis();
   _requestType = SHT2x_REQ_TEMPERATURE;
   return true;
@@ -106,12 +110,15 @@ bool SHT2x::requestTemperature()
 
 bool SHT2x::requestHumidity()
 {
-  writeCmd(SHT2x_GET_HUMIDITY_NO_HOLD);
+  if (! writeCmd(SHT2x_GET_HUMIDITY_NO_HOLD))
+  {
+    _requestType = SHT2x_REQ_FAIL;
+    return false;
+  }
   _lastRequest = millis();
   _requestType = SHT2x_REQ_HUMIDITY;
   return true;
 }
-
 
 bool SHT2x::reqTempReady()
 {
@@ -183,6 +190,8 @@ bool SHT2x::readTemperature()
   //  _error = SHT2x_ERR_READBYTES; // Or a more specific error e.g. SHT2x_ERR_UNEXPECTED_STATUS
   //  return false;
   //}
+  _error  = SHT2x_OK;
+  _lastRead = millis();
   return true;
 }
 
@@ -218,7 +227,7 @@ bool SHT2x::readHumidity()
   //  return false;
   //}
 
-  _error = SHT2x_OK; // Mark as OK if all checks passed for this specific read
+  if (_error == SHT2x_OK) _error = SHT2x_OK; // Mark as OK if all checks passed for this specific read
   _lastRead = millis(); // Record time of successful synchronous style read completion
   return true;
 }
@@ -229,16 +238,21 @@ bool SHT2x::readCachedTemperature()
   if (_error == SHT2x_OK)
   {
     writeCmd(SHT2x_GET_TEMPERATURE_FOR_HUMIDITY);
-    uint8_t buffer[2];
-    if (readBytes(2, (uint8_t*) &buffer[0], 10) == false)
+ uint8_t buffer[3];
+    if (readBytes(3, (uint8_t*) &buffer[0], 10) == false)
+     {
+       _error = SHT2x_ERR_READBYTES;
+       return false;
+     }
+    if (crc8(buffer, 2) != buffer[2])
     {
-      _error = SHT2x_ERR_READBYTES;
-      return false;
+      _error = SHT2x_ERR_CRC_TEMP;
+      
     }
-    _rawTemperature  = buffer[0] << 8;
-    _rawTemperature += buffer[1];
-    _rawTemperature &= 0xFFFC;
-    return true;
+     _rawTemperature  = buffer[0] << 8;
+     _rawTemperature += buffer[1];
+     _rawTemperature &= 0xFFFC;
+     return true;
   }
   else
   {
