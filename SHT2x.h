@@ -43,6 +43,7 @@
 #define SHT2x_REQ_NONE                0x00  // No active asynchronous request.
 #define SHT2x_REQ_TEMPERATURE         0x01  // Asynchronous temperature request is currently active.
 #define SHT2x_REQ_HUMIDITY            0x02  // Asynchronous humidity request is currently active.
+#define SHT2x_REQ_FAIL                0xFF
 
 
 class SHT2x
