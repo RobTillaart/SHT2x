@@ -1,7 +1,7 @@
 //
 //    FILE: SHT2x.cpp
-//  AUTHOR: Rob Tillaart, Viktor Balint, JensB
-// VERSION: 0.5.1
+//  AUTHOR: Rob Tillaart, Viktor Balint, JensB, morfeus02
+// VERSION: 0.5.2
 //    DATE: 2023-11-25
 // PURPOSE: Arduino library for the SHT2x temperature and humidity sensor
 //     URL: https://github.com/RobTillaart/SHT2x
@@ -24,7 +24,7 @@
 
 
 #define SHT2x_USRREG_RESOLUTION            0x81
-#define SHT2x_USRREG_BATTERY               0x40 //sht21 datasheet
+#define SHT2x_USRREG_BATTERY               0x40  //  sht21 datasheet
 #define SHT2x_USRREG_HEATER                0x04
 
 
@@ -100,7 +100,7 @@ bool SHT2x::requestTemperature()
   if (! writeCmd(SHT2x_GET_TEMPERATURE_NO_HOLD))
   {
     _requestType = SHT2x_REQ_FAIL;
-    return false;                      // errore già registrato da writeCmd()
+    return false;  //  error is registered in writeCmd()
   }
   _lastRequest = millis();
   _requestType = SHT2x_REQ_TEMPERATURE;
@@ -119,6 +119,7 @@ bool SHT2x::requestHumidity()
   _requestType = SHT2x_REQ_HUMIDITY;
   return true;
 }
+
 
 bool SHT2x::reqTempReady()
 {
@@ -177,12 +178,13 @@ bool SHT2x::readTemperature()
   }
   _rawTemperature  = buffer[0] << 8;
   _rawTemperature += buffer[1];
-  _rawTemperature &= 0xFFFC; // Clear status bits (last two bits)
+  //  Clear status bits (last two bits)
+  _rawTemperature &= 0xFFFC;
 
-  //  clear requestType, marking this async operation as complete
+  //  Clear requestType, marking this async operation as complete
   _requestType = SHT2x_REQ_NONE;
 
-  _status = buffer[1] & 0x03; // Extract status bits
+  //  _status = buffer[1] & 0x02;  //  Extract status bit  (bit 0 not used)
   //  After a temperature read, the status bits should indicate "temperature reading" (0x01).
   //  If not, it implies a read error or unexpected sensor state.
   //if (_status != SHT2x_STATUS_TEMPERATURE)
@@ -190,7 +192,8 @@ bool SHT2x::readTemperature()
   //  _error = SHT2x_ERR_READBYTES; // Or a more specific error e.g. SHT2x_ERR_UNEXPECTED_STATUS
   //  return false;
   //}
-  _error  = SHT2x_OK;
+
+  _error = SHT2x_OK;
   _lastRead = millis();
   return true;
 }
@@ -218,8 +221,8 @@ bool SHT2x::readHumidity()
   //  clear requestType, marking this async operation as complete
   _requestType = SHT2x_REQ_NONE;
 
-  _status = buffer[1] & 0x03; // Extract status bits
-  //  After a humidity read, the status bits should indicate "humidity reading" (0x02).
+  //  _status = buffer[1] & 0x02; // Extract status bit
+  //  After a humidity read, the status bit should indicate "humidity reading" (0x00).
   //  If not, it implies a read error or unexpected sensor state.
   //if (_status != SHT2x_STATUS_HUMIDITY)
   //{
@@ -227,7 +230,7 @@ bool SHT2x::readHumidity()
   //  return false;
   //}
 
-  if (_error == SHT2x_OK) _error = SHT2x_OK; // Mark as OK if all checks passed for this specific read
+  _error = SHT2x_OK; // Mark as OK if all checks passed for this specific read
   _lastRead = millis(); // Record time of successful synchronous style read completion
   return true;
 }
@@ -238,21 +241,20 @@ bool SHT2x::readCachedTemperature()
   if (_error == SHT2x_OK)
   {
     writeCmd(SHT2x_GET_TEMPERATURE_FOR_HUMIDITY);
- uint8_t buffer[3];
+    uint8_t buffer[3];
     if (readBytes(3, (uint8_t*) &buffer[0], 10) == false)
-     {
-       _error = SHT2x_ERR_READBYTES;
-       return false;
-     }
+    {
+      _error = SHT2x_ERR_READBYTES;
+      return false;
+    }
     if (crc8(buffer, 2) != buffer[2])
     {
       _error = SHT2x_ERR_CRC_TEMP;
-      
     }
-     _rawTemperature  = buffer[0] << 8;
-     _rawTemperature += buffer[1];
-     _rawTemperature &= 0xFFFC;
-     return true;
+    _rawTemperature  = buffer[0] << 8;
+    _rawTemperature += buffer[1];
+    _rawTemperature &= 0xFFFC;
+    return true;
   }
   else
   {
