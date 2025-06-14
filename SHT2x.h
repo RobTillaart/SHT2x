@@ -1,7 +1,7 @@
 #pragma once
 //
 //    FILE: SHT2x.h
-//  AUTHOR: Rob Tillaart, Viktor Balint, JensB
+//  AUTHOR: Rob Tillaart, Viktor Balint, JensB, morfeus02
 // VERSION: 0.5.1
 //    DATE: 2023-11-25
 // PURPOSE: Arduino library for the SHT2x temperature and humidity sensor
@@ -18,8 +18,8 @@
 
 //  fields getStatus
 #define SHT2x_STATUS_OPEN_CIRCUIT     0x00
-#define SHT2x_STATUS_TEMPERATURE      0x01
-#define SHT2x_STATUS_HUMIDITY         0x02
+#define SHT2x_STATUS_TEMPERATURE      0x00  //  only bit 1
+#define SHT2x_STATUS_HUMIDITY         0x02  //  only bit 1
 #define SHT2x_STATUS_CLOSED_CIRCUIT   0x03
 
 
@@ -43,7 +43,7 @@
 #define SHT2x_REQ_NONE                0x00  // No active asynchronous request.
 #define SHT2x_REQ_TEMPERATURE         0x01  // Asynchronous temperature request is currently active.
 #define SHT2x_REQ_HUMIDITY            0x02  // Asynchronous humidity request is currently active.
-#define SHT2x_REQ_FAIL                0xFF
+#define SHT2x_REQ_FAIL                0xFF  // Asynchronous humidity request is currently active.
 
 
 class SHT2x
