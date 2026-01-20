@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## {0.5.4] - 2026-01-20
 - fix #40, add getHumidityCompensated() for HTU21 device.
 - add example HTU21_getHumidityCompensated.ino
+- add example HTU21_test_getHumidityCompensated.ino
 - update readme.md
 - update GitHub actions
 - minor edits
