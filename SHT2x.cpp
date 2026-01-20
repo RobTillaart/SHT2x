@@ -706,7 +706,7 @@ float HTU21::getHumidityCompensated(float temperature)
   return getHumidity() + (25.0f - temperature) * _compensationFactor;
 }
 
-bool  HTU21::setHumidityCompensationFactor(float hcFactor)
+void HTU21::setHumidityCompensationFactor(float hcFactor)
 {
   _compensationFactor = hcFactor;
 }

@@ -441,8 +441,8 @@ the internal temperature (degrees C).
 Note both must be read first.
 - **float getHumidityCompensated(float temperature)** Returns temperature compensated 
 humidity based upon an external temperature (degrees C).
-- **bool setHumidityCompensationFactor(float hcFactor = -0.15f)** adjust the humidity
-compensation factor (in %/°C)
+- **void setHumidityCompensationFactor(float hcFactor = -0.15f)** adjust the humidity
+compensation factor (in %/°C), default -0.15.
 - **float getHumidityCompensationFactor()** returns the set value, default -0.15f.
 
 

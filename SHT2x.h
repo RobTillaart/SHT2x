@@ -241,7 +241,7 @@ public:
   float getHumidityCompensated();
   float getHumidityCompensated(float temperature);
   //  run time control of the compensation factor
-  bool  setHumidityCompensationFactor(float hcFactor = -0.15f);
+  void  setHumidityCompensationFactor(float hcFactor = -0.15f);
   float getHumidityCompensationFactor();
 
 private:
