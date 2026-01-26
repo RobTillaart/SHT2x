@@ -54,12 +54,17 @@ User pgtest has made a number of experiments after he saw an increased temperatu
 and decreased humidity when the sensors he used were in close proximity (about 3 cm)
 of the ESP-C3 Wifi antenna. As far as understood the 2.4 GHz heats up the water 
 molecules in the air which cause the absolute humidity to rise, and thus the relative
-humidity to go down (If abs hum stays same). Possibly there are more ways the 2.4 GHz
-affect the sensor, e.g. Wifi usage %, in short just unknown.
+humidity to go down. Furthermore it seems that water evaporates which causes the 
+absolute humidity drop too, resulting in drop of relative humidity too.
+Possibly there are more ways the 2.4 GHz could affect the sensor, especially the amount
+of Wifi usage could be a factor.  
 
 The library does not compensate for this effect as there is no formula that calculates
-the delta for a given distance. However one could use the multiMap() library to build 
-your own (non-linear) corrections if needed.
+the delta for a given distance and/or Wifi usage. However one could use the multiMap() 
+library to build (non-linear) corrections if needed.
+
+Advice is to keep the sensor "as far" from Wifi as possible, if possible 15 cm or more.
+Also take care of good air circulation in/around the sensor.
 
 
 ### 0.5.0 Breaking change
