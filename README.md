@@ -46,6 +46,22 @@ or one should switch sensors on/off like the select in SPI communication.
 Feedback as always is welcome.
 
 
+### Wifi affecting accuracy
+
+See https://github.com/RobTillaart/SHT2x/issues/42
+
+User pgtest has made a number of experiments after he saw an increased temperature
+and decreased humidity when the sensors he used were in close proximity (about 3 cm)
+of the ESP-C3 Wifi antenna. As far as understood the 2.4 GHz heats up the water 
+molecules in the air which cause the absolute humidity to rise, and thus the relative
+humidity to go down (If abs hum stays same). Possibly there are more ways the 2.4 GHz
+affect the sensor, e.g. Wifi usage %, in short just unknown.
+
+The library does not compensate for this effect as there is no formula that calculates
+the delta for a given distance. However one could use the multiMap() library to build 
+your own (non-linear) corrections if needed.
+
+
 ### 0.5.0 Breaking change
 
 Version 0.5.0 introduced a breaking change.
@@ -61,6 +77,7 @@ before calling **begin()**.
 - https://github.com/RobTillaart/SHT85
 - https://github.com/RobTillaart/tinySHT2x
 - https://github.com/RobTillaart/Temperature Temperature related formulas.
+- https://github.com/RobTillaart/MultiMap
 
 
 ## Interface
