@@ -63,7 +63,7 @@ The library does not compensate for this effect as there is no formula that calc
 the delta for a given distance and/or Wifi usage. However one could use the multiMap() 
 library to build (non-linear) corrections if needed.
 
-Advice is to keep the sensor "as far" from Wifi as possible, if possible 15 cm or more.
+Advice is to keep the sensor "as far" from heat sources including Wifi as possible.
 Also take care of good air circulation in/around the sensor.
 
 
