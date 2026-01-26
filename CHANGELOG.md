@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## {0.5.5] - 2026-xx.xx
-- update readme.md, Wifi section, see #42
+- update readme.md, Wifi section, see #42 (kudos pgtest)
 
 
 ## {0.5.4] - 2026-01-20
