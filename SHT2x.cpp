@@ -179,6 +179,11 @@ bool SHT2x::readTemperature()
   {
     _error = SHT2x_OK;
   }
+  _status = buffer[1] & 0x03;  //  Preserve response status bits before masking.
+  if (_error == SHT2x_OK && (_status & 0x02) != SHT2x_STATUS_TEMPERATURE)
+  {
+    _error = SHT2x_ERR_UNEXPECTED_STATUS;
+  }
   _rawTemperature  = buffer[0] << 8;
   _rawTemperature += buffer[1];
   //  Clear status bits (last two bits)
@@ -187,17 +192,8 @@ bool SHT2x::readTemperature()
   //  Clear requestType, marking this async operation as complete
   _requestType = SHT2x_REQ_NONE;
 
-  //  _status = buffer[1] & 0x02;  //  Extract status bit  (bit 0 not used)
-  //  After a temperature read, the status bits should indicate "temperature reading" (0x01).
-  //  If not, it implies a read error or unexpected sensor state.
-  //if (_status != SHT2x_STATUS_TEMPERATURE)
-  //{
-  //  _error = SHT2x_ERR_READBYTES; // Or a more specific error e.g. SHT2x_ERR_UNEXPECTED_STATUS
-  //  return false;
-  //}
-
-  _lastRead = millis();
-  return true;
+  if (_error == SHT2x_OK) _lastRead = millis();
+  return _error == SHT2x_OK;
 }
 
 
@@ -219,6 +215,11 @@ bool SHT2x::readHumidity()
   {
     _error = SHT2x_OK;
   }
+  _status = buffer[1] & 0x03;  //  Preserve response status bits before masking.
+  if (_error == SHT2x_OK && (_status & 0x02) != SHT2x_STATUS_HUMIDITY)
+  {
+    _error = SHT2x_ERR_UNEXPECTED_STATUS;
+  }
   _rawHumidity  = buffer[0] << 8;
   _rawHumidity += buffer[1];
   _rawHumidity &= 0xFFFC; // Clear status bits (last two bits)
@@ -226,17 +227,8 @@ bool SHT2x::readHumidity()
   //  clear requestType, marking this async operation as complete
   _requestType = SHT2x_REQ_NONE;
 
-  //  _status = buffer[1] & 0x02; // Extract status bit
-  //  After a humidity read, the status bit should indicate "humidity reading" (0x00).
-  //  If not, it implies a read error or unexpected sensor state.
-  //if (_status != SHT2x_STATUS_HUMIDITY)
-  //{
-  //  _error = SHT2x_ERR_READBYTES; // Or a more specific error e.g. SHT2x_ERR_UNEXPECTED_STATUS
-  //  return false;
-  //}
-
-  _lastRead = millis(); // Record time of successful synchronous style read completion
-  return true;
+  if (_error == SHT2x_OK) _lastRead = millis();
+  return _error == SHT2x_OK;
 }
 
 
@@ -256,10 +248,15 @@ bool SHT2x::readCachedTemperature()
       _error = SHT2x_ERR_CRC_TEMP;
       //  Keep the value available; callers can check getError().
     }
+    _status = buffer[1] & 0x03;  //  Preserve response status bits before masking.
+    if (_error == SHT2x_OK && (_status & 0x02) != SHT2x_STATUS_TEMPERATURE)
+    {
+      _error = SHT2x_ERR_UNEXPECTED_STATUS;
+    }
     _rawTemperature  = buffer[0] << 8;
     _rawTemperature += buffer[1];
     _rawTemperature &= 0xFFFC;
-    return true;
+    return _error == SHT2x_OK;
   }
   else
   {
