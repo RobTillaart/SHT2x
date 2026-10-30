@@ -65,6 +65,12 @@ bool SHT2x::isConnected()
 }
 
 
+uint8_t SHT2x::getAddress()
+{
+  return 0x60;  //  hardcoded!
+}
+
+
 /////////////////////////////////////////////////////////
 //
 //  SYNCHRONOUS INTERFACE
