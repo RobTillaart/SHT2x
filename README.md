@@ -87,12 +87,27 @@ before calling **begin()**.
 
 ### Related
 
+SHT series temperature sensors
+
 - https://github.com/RobTillaart/SHT2x
 - https://github.com/RobTillaart/SHT2x_INT - integer math only to minimize footprint.
-- https://github.com/RobTillaart/SHT31
-- https://github.com/RobTillaart/SHT85
+- https://github.com/RobTillaart/SHT31 - library for the SHT31 sensor
+- https://github.com/RobTillaart/SHT4x - library for the SHT4x sensor
+- https://github.com/RobTillaart/SHT85 - library for the SHT85 sensor
 - https://github.com/RobTillaart/tinySHT2x - specific for AVR tiny processors.
-- https://github.com/RobTillaart/Temperature - Temperature related formulas.
+
+Other temperature sensors
+
+- https://github.com/RobTillaart/DHTNew DHT11/22 etc
+- https://github.com/RobTillaart/DHTStable DHT11/22 etc
+- https://github.com/RobTillaart/DHT_Simulator
+- https://github.com/RobTillaart/DS18B20_INT OneWire temperature sensor
+- https://github.com/RobTillaart/DS18B20_RT OneWire temperature sensor
+
+Other, including Dew point, heat index, related functions and conversions
+
+- https://www.kandrsmith.org/RJS/Misc/Hygrometers/calib_many.html (interesting)
+- https://github.com/RobTillaart/Temperature (conversions, dewPoint, heat index etc.)
 - https://github.com/RobTillaart/MultiMap - non linear mapping
 
 
@@ -103,6 +118,10 @@ ALT167 = º (degrees)
 
 
 ## I2C
+
+### Address
+
+Device has a fixed address of 0x60;
 
 ### Performance
 
@@ -165,6 +184,7 @@ internally, which can take up to 15 ms. Returns `false` if the device address
 is not reachable or if the sensor fails to reset.
 - **bool isConnected()**: Checks if the sensor is reachable over the I2C bus.
 Returns `false` if the sensor is not connected or does not acknowledge.
+- **uint8_t getAddress()** returns 0x60 (96) default address.
 - **bool reset()**: Performs a soft reset of the sensor. This can take up to 15 ms.
 Hard reset is not supported by this library.
 - **uint32_t lastRead()**: Returns the timestamp (in milliseconds since program start)

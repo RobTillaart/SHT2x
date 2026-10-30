@@ -17,32 +17,33 @@
 
 
 //  fields getStatus
-#define SHT2x_STATUS_OPEN_CIRCUIT     0x00
-#define SHT2x_STATUS_TEMPERATURE      0x00  //  only bit 1, bit 0 not used
-#define SHT2x_STATUS_HUMIDITY         0x02  //  only bit 1, bit 0 not used
-#define SHT2x_STATUS_CLOSED_CIRCUIT   0x03
+const uint8_t SHT2x_STATUS_OPEN_CIRCUIT     = 0x00;  //  not used
+const uint8_t SHT2x_STATUS_TEMPERATURE      = 0x00;  //  only bit 1, bit 0 not used
+const uint8_t SHT2x_STATUS_HUMIDITY         = 0x02;  //  only bit 1, bit 0 not used
+const uint8_t SHT2x_STATUS_CLOSED_CIRCUIT   = 0x03;  //  not used
 
 
 //  Error codes
 //  Error codes are kept somewhat in sync with SHT31 library for consistency where applicable.
-#define SHT2x_OK                      0x00  //  Default success value, no error.
-#define SHT2x_ERR_WRITECMD            0x81  //  Error during I2C write command.
-#define SHT2x_ERR_READBYTES           0x82  //  Error during I2C read bytes.
-#define SHT2x_ERR_HEATER_OFF          0x83  //  Failed to switch off the internal heater.
-#define SHT2x_ERR_NOT_CONNECT         0x84  //  Sensor not connected or does not acknowledge on the I2C bus.
-#define SHT2x_ERR_CRC_TEMP            0x85  //  CRC check failed for the temperature reading.
-#define SHT2x_ERR_CRC_HUM             0x86  //  CRC check failed for the humidity reading.
-#define SHT2x_ERR_CRC_STATUS          0x87  //  CRC check failed for the status register (currently not actively used for status validation within library).
-#define SHT2x_ERR_HEATER_COOLDOWN     0x88  //  Heater is in its mandatory cool-down period and cannot be re-enabled yet.
-#define SHT2x_ERR_HEATER_ON           0x89  //  Failed to switch on the internal heater.
-#define SHT2x_ERR_RESOLUTION          0x8A  //  Invalid resolution parameter provided (since 0.2.0).
-#define SHT2x_ERR_UNEXPECTED_STATUS   0x8B  //  Response measurement type does not match the requested reading.
+const uint8_t SHT2x_OK                      = 0x00;  //  Default success value, no error.
+const uint8_t SHT2x_ERR_WRITECMD            = 0x81;  //  Error during I2C write command.
+const uint8_t SHT2x_ERR_READBYTES           = 0x82;  //  Error during I2C read bytes.
+const uint8_t SHT2x_ERR_HEATER_OFF          = 0x83;  //  Failed to switch off the internal heater.
+const uint8_t SHT2x_ERR_NOT_CONNECT         = 0x84;  //  Sensor not connected or does not acknowledge on the I2C bus.
+const uint8_t SHT2x_ERR_CRC_TEMP            = 0x85;  //  CRC check failed for the temperature reading.
+const uint8_t SHT2x_ERR_CRC_HUM             = 0x86;  //  CRC check failed for the humidity reading.
+const uint8_t SHT2x_ERR_CRC_STATUS          = 0x87;  //  CRC check failed for the status register 
+                                                     //  (currently not used for status validation within library).
+const uint8_t SHT2x_ERR_HEATER_COOLDOWN     = 0x88;  //  Heater is in its mandatory cool-down period and cannot be re-enabled yet.
+const uint8_t SHT2x_ERR_HEATER_ON           = 0x89;  //  Failed to switch on the internal heater.
+const uint8_t SHT2x_ERR_RESOLUTION          = 0x8A;  //  Invalid resolution parameter provided (since 0.2.0).
+const uint8_t SHT2x_ERR_UNEXPECTED_STATUS   = 0x8B;  //  Response measurement type does not match the requested reading.
 
 //  Asynchronous request types
-#define SHT2x_REQ_NONE                0x00  //  No active asynchronous request.
-#define SHT2x_REQ_TEMPERATURE         0x01  //  Asynchronous temperature request is currently active.
-#define SHT2x_REQ_HUMIDITY            0x02  //  Asynchronous humidity request is currently active.
-#define SHT2x_REQ_FAIL                0xFF  //  Asynchronous humidity request is currently active.
+const uint8_t SHT2x_REQ_NONE                = 0x00;  //  No active asynchronous request.
+const uint8_t SHT2x_REQ_TEMPERATURE         = 0x01;  //  Asynchronous temperature request is currently active.
+const uint8_t SHT2x_REQ_HUMIDITY            = 0x02;  //  Asynchronous humidity request is currently active.
+const uint8_t SHT2x_REQ_FAIL                = 0xFF;  //  Asynchronous humidity request is currently active.
 
 
 class SHT2x
@@ -51,10 +52,10 @@ public:
   SHT2x(TwoWire *wire = &Wire); // Constructor, accepts a TwoWire pointer for I2C communication.
 
   //  Core functions
-  bool begin();        //  Initializes the sensor (checks connection, performs a reset).
-  bool isConnected();  //  Checks if the sensor acknowledges its address on the I2C bus.
-  bool reset();        //  Performs a soft reset on the sensor. Takes up to 15ms to complete.
-
+  bool begin();          //  Initializes the sensor (checks connection, performs a reset).
+  bool isConnected();    //  Checks if the sensor acknowledges its address on the I2C bus.
+  bool reset();          //  Performs a soft reset on the sensor. Takes up to 15ms to complete.
+  uint8_t getAddress();  //  convenience function
 
   //  Synchronous measurement
   //  This function blocks program execution while reading temperature and then humidity.

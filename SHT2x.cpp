@@ -11,21 +11,20 @@
 
 
 //  SUPPORTED COMMANDS
-#define SHT2x_GET_TEMPERATURE_NO_HOLD      0xF3
-#define SHT2x_GET_TEMPERATURE_FOR_HUMIDITY 0xE0
-#define SHT2x_GET_HUMIDITY_NO_HOLD         0xF5
-#define SHT2x_SOFT_RESET                   0xFE
-#define SHT2x_WRITE_USER_REGISTER          0xE6
-#define SHT2x_READ_USER_REGISTER           0xE7
+const uint8_t SHT2x_GET_TEMPERATURE_NO_HOLD      = 0xF3;
+const uint8_t SHT2x_GET_TEMPERATURE_FOR_HUMIDITY = 0xE0;
+const uint8_t SHT2x_GET_HUMIDITY_NO_HOLD         = 0xF5;
+const uint8_t SHT2x_SOFT_RESET                   = 0xFE;
+const uint8_t SHT2x_WRITE_USER_REGISTER          = 0xE6;
+const uint8_t SHT2x_READ_USER_REGISTER           = 0xE7;
 
-#define SHT2x_HEATER_TIMEOUT               180000UL  //  milliseconds
+const uint32_t SHT2x_HEATER_TIMEOUT              = 180000UL;  //  milliseconds
 
-#define SHT2x_ADDRESS                      0x40
+const uint8_t SHT2x_ADDRESS                      = 0x40;
 
-
-#define SHT2x_USRREG_RESOLUTION            0x81
-#define SHT2x_USRREG_BATTERY               0x40  //  sht21 datasheet
-#define SHT2x_USRREG_HEATER                0x04
+const uint8_t SHT2x_USRREG_RESOLUTION            = 0x81;
+const uint8_t SHT2x_USRREG_BATTERY               = 0x40;  //  sht21 datasheet
+const uint8_t SHT2x_USRREG_HEATER                = 0x04;
 
 
 //////////////////////////////////////////////////////////////

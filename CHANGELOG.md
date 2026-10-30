@@ -8,8 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## {0.5.6] - 2026-10-29
 - merge PR #44, improve error handling, kudos to moritz89
-- replace defines with const uint8_t uint16_t etc.
+- replace defines with const uint8_t (allows type check)
+- update unit test (constants)
 - reduce build-CI to 3 platforms.
+- add getAddress() convenience function.
+- update readme.md
 - minor edits
 
 ## {0.5.5] - 2026-01-30
