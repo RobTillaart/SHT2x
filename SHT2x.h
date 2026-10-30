@@ -32,7 +32,7 @@ const uint8_t SHT2x_ERR_HEATER_OFF          = 0x83;  //  Failed to switch off th
 const uint8_t SHT2x_ERR_NOT_CONNECT         = 0x84;  //  Sensor not connected or does not acknowledge on the I2C bus.
 const uint8_t SHT2x_ERR_CRC_TEMP            = 0x85;  //  CRC check failed for the temperature reading.
 const uint8_t SHT2x_ERR_CRC_HUM             = 0x86;  //  CRC check failed for the humidity reading.
-const uint8_t SHT2x_ERR_CRC_STATUS          = 0x87;  //  CRC check failed for the status register 
+const uint8_t SHT2x_ERR_CRC_STATUS          = 0x87;  //  CRC check failed for the status register
                                                      //  (currently not used for status validation within library).
 const uint8_t SHT2x_ERR_HEATER_COOLDOWN     = 0x88;  //  Heater is in its mandatory cool-down period and cannot be re-enabled yet.
 const uint8_t SHT2x_ERR_HEATER_ON           = 0x89;  //  Failed to switch on the internal heater.

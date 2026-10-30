@@ -91,9 +91,9 @@ unittest(test_constants_3)
 {
   fprintf(stderr, "request codes\n");
   assertEqual(SHT2x_REQ_NONE       , 0x00);
-  assertEqual(SHT2x_REQ_TEMPERATURE, 0x81);
-  assertEqual(SHT2x_REQ_HUMIDITY   , 0x82);
-  assertEqual(SHT2x_REQ_FAIL       , 0x83);
+  assertEqual(SHT2x_REQ_TEMPERATURE, 0x01);
+  assertEqual(SHT2x_REQ_HUMIDITY   , 0x02);
+  assertEqual(SHT2x_REQ_FAIL       , 0xFF);
 }
 
 

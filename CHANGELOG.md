@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
-## {0.5.6] - 2026-10-29
+## {0.5.6] - 2026-10-30
 - merge PR #44, improve error handling, kudos to moritz89
 - replace defines with const uint8_t (allows type check)
 - update unit test (constants)
