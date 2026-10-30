@@ -36,8 +36,7 @@
 #define SHT2x_ERR_HEATER_COOLDOWN     0x88  //  Heater is in its mandatory cool-down period and cannot be re-enabled yet.
 #define SHT2x_ERR_HEATER_ON           0x89  //  Failed to switch on the internal heater.
 #define SHT2x_ERR_RESOLUTION          0x8A  //  Invalid resolution parameter provided (since 0.2.0).
-// Consider adding SHT2x_ERR_UNEXPECTED_STATUS for status check failures in readTemperature/readHumidity.
-// Currently, these failures reuse SHT2x_ERR_READBYTES.
+#define SHT2x_ERR_UNEXPECTED_STATUS   0x8B  //  Response measurement type does not match the requested reading.
 
 //  Asynchronous request types
 #define SHT2x_REQ_NONE                0x00  //  No active asynchronous request.
@@ -65,15 +64,16 @@ public:
 
   //  Getters for sensor values
   //  These functions return values based on the last successful read() or asynchronous read operation.
-  float    getTemperature();     //  Returns the temperature in degrees Celsius (°C).
+  float    getTemperature();     //  Returns the temperature in degrees Celsius (ï¿½C).
   float    getHumidity();        //  Returns the relative humidity in percent (%).
   uint16_t getRawTemperature();  //  Returns the raw 16-bit sensor data for temperature.
   uint16_t getRawHumidity();     //  Returns the raw 16-bit sensor data for humidity.
 
 
   //  Status and timing related functions
-  //  getStatus() returns the 2 status bits from the user register, which indicate the
-  //  type of measurement stored in the sensor's memory (e.g., temperature or humidity).
+  //  getStatus() returns the two low bits of the last received measurement.
+  //  Bit 1 indicates the measurement type (0: temperature, 1: humidity); bit 0 is unassigned.
+  //  Status is updated even on CRC failure; check getError() before trusting it.
   //  See SHT2x_STATUS_* defines for interpreting the return value.
   uint8_t  getStatus();
   uint32_t lastRead();  //  Returns the timestamp (from millis()) of the last successful synchronous read() operation.
@@ -143,6 +143,7 @@ public:
 
 
   //  Read data from the sensor after reqTempReady() or reqHumReady() has indicated data is available.
+  //  Reads retain received values for inspection, but return false on CRC or measurement-type errors.
   bool    readTemperature();  //  Reads the previously requested temperature data. Updates getTemperature().
   bool    readHumidity();     //  Reads the previously requested humidity data. Updates getHumidity().
 
@@ -178,7 +179,7 @@ protected:
   uint32_t _lastRead;        //  Timestamp of the last successful synchronous read operation.
   uint16_t _rawTemperature;  //  Last raw temperature reading from the sensor.
   uint16_t _rawHumidity;     //  Last raw humidity reading from the sensor.
-  uint8_t  _status;          //  Sensor status bits from the user register.
+  uint8_t  _status;          //  Status bits from the last received measurement.
   uint8_t  _error;           //  Stores the last error code encountered (see SHT2x_ERR_*).
   uint8_t  _resolution;      //  Currently configured measurement resolution (0-3).
 
