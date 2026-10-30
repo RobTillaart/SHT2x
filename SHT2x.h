@@ -2,7 +2,7 @@
 //
 //    FILE: SHT2x.h
 //  AUTHOR: Rob Tillaart, Viktor Balint, JensB, morfeus02
-// VERSION: 0.5.5
+// VERSION: 0.5.6
 //    DATE: 2023-11-25
 // PURPOSE: Arduino library for the SHT2x temperature and humidity sensor
 //     URL: https://github.com/RobTillaart/SHT2x
@@ -13,13 +13,13 @@
 #include "Wire.h"
 
 
-#define SHT2x_LIB_VERSION             (F("0.5.5"))
+#define SHT2x_LIB_VERSION             (F("0.5.6"))
 
 
 //  fields getStatus
 #define SHT2x_STATUS_OPEN_CIRCUIT     0x00
-#define SHT2x_STATUS_TEMPERATURE      0x00  //  only bit 1
-#define SHT2x_STATUS_HUMIDITY         0x02  //  only bit 1
+#define SHT2x_STATUS_TEMPERATURE      0x00  //  only bit 1, bit 0 not used
+#define SHT2x_STATUS_HUMIDITY         0x02  //  only bit 1, bit 0 not used
 #define SHT2x_STATUS_CLOSED_CIRCUIT   0x03
 
 
@@ -64,7 +64,7 @@ public:
 
   //  Getters for sensor values
   //  These functions return values based on the last successful read() or asynchronous read operation.
-  float    getTemperature();     //  Returns the temperature in degrees Celsius (ï¿½C).
+  float    getTemperature();     //  Returns the temperature in degrees Celsius (°C).
   float    getHumidity();        //  Returns the relative humidity in percent (%).
   uint16_t getRawTemperature();  //  Returns the raw 16-bit sensor data for temperature.
   uint16_t getRawHumidity();     //  Returns the raw 16-bit sensor data for humidity.
@@ -179,7 +179,7 @@ protected:
   uint32_t _lastRead;        //  Timestamp of the last successful synchronous read operation.
   uint16_t _rawTemperature;  //  Last raw temperature reading from the sensor.
   uint16_t _rawHumidity;     //  Last raw humidity reading from the sensor.
-  uint8_t  _status;          //  Status bits from the last received measurement.
+  uint8_t  _status;          //  Sensor status bits from the user register.
   uint8_t  _error;           //  Stores the last error code encountered (see SHT2x_ERR_*).
   uint8_t  _resolution;      //  Currently configured measurement resolution (0-3).
 
